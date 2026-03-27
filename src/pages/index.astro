@@ -133,7 +133,10 @@ const carouselProjects = workItems.map((item) => ({
                   {item.title}
                 </button>
                 {multi ? (
-                  <div class="flex shrink-0 items-center rounded-full bg-lime text-[0.75rem] font-semibold leading-none tracking-wide text-ink">
+                  <div
+                    class="flex shrink-0 items-center rounded-full bg-lime text-[0.75rem] font-semibold leading-none tracking-wide text-ink"
+                    data-carousel-controls
+                  >
                     <button
                       type="button"
                       data-carousel-prev

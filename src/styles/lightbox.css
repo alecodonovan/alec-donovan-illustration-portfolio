@@ -350,6 +350,31 @@
 [data-carousel-frame] {
   touch-action: pan-y;
   -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+}
+
+#work-grid [data-carousel-frame] img,
+#work-grid [data-carousel-frame] video {
+  -webkit-user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+}
+
+/* Thumb hit target: block native “drag to select” highlight on desktop while swiping */
+#work-grid .work-card > div[role="button"][data-pswp-project] {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+}
+
+#work-grid [data-carousel-controls],
+#work-grid [data-carousel-controls] * {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
 }
 
 /* While dragging horizontally, prevent iOS/Safari from stealing the gesture for scroll */

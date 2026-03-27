@@ -30,6 +30,11 @@ const isDesktop = () => window.matchMedia("(min-width: 768px)").matches;
 const THUMB_CLASS =
   "absolute inset-0 z-[2] w-full h-full object-cover object-left-top work-thumb-media";
 
+function clearTextSelection() {
+  const sel = window.getSelection?.();
+  if (sel && sel.rangeCount > 0) sel.removeAllRanges();
+}
+
 function bindWorkThumbFrame(frame: HTMLElement) {
   const media = frame.querySelector<HTMLImageElement | HTMLVideoElement>(
     "[data-project-thumb]",
@@ -94,6 +99,21 @@ function init() {
   grid.querySelectorAll<HTMLElement>("[data-carousel-frame]").forEach((frame) => {
     bindWorkThumbFrame(frame);
   });
+
+  document.addEventListener(
+    "selectstart",
+    (e) => {
+      const el = e.target;
+      if (!(el instanceof Element)) return;
+      if (
+        el.closest("#work-grid [data-carousel-frame]") ||
+        el.closest("#work-grid [data-carousel-controls]")
+      ) {
+        e.preventDefault();
+      }
+    },
+    true,
+  );
 
   function createGutter(): HTMLElement {
     const el = document.createElement("div");
@@ -799,6 +819,7 @@ function init() {
         cdDecided = true;
         if (Math.abs(dx) > Math.abs(dy)) {
           cdHorizontal = true;
+          clearTextSelection();
           cdSetupImages();
           if (!cdFrame) { cdActive = false; return; }
           cdFrame.classList.add("carousel-horizontal-drag");
@@ -839,7 +860,7 @@ function init() {
 
     if (pct < -threshold) {
       cdSnapTo(1);
-    } else     if (pct > threshold) {
+    } else if (pct > threshold) {
       cdSnapTo(-1);
     } else {
       cdSnapBack();
@@ -889,6 +910,7 @@ function init() {
         cdDecided = true;
         if (Math.abs(dx) > Math.abs(dy)) {
           cdHorizontal = true;
+          clearTextSelection();
           cdSetupImages();
           if (!cdFrame) {
             cdActive = false;
