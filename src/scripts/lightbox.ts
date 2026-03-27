@@ -280,7 +280,8 @@ function init() {
   }
 
   scrollWrap.addEventListener("pointerdown", (e) => {
-    if (e.button !== 0) return;
+    // Touch pointers use button -1 per spec; mouse must be primary button.
+    if (e.pointerType === "mouse" && e.button !== 0) return;
     if (!isDesktop()) return;
     if ((e.target as Element).closest(".lightbox-video-controls, .lb-play-overlay")) return;
 
@@ -439,6 +440,7 @@ function init() {
   }
 
   function cdCleanup() {
+    if (cdFrame) cdFrame.classList.remove("carousel-horizontal-drag");
     if (cdPrevImg) { cdPrevImg.remove(); cdPrevImg = null; }
     if (cdNextImg) { cdNextImg.remove(); cdNextImg = null; }
     if (cdCurrentThumb) {
@@ -486,6 +488,7 @@ function init() {
     if (counter) counter.textContent = String(idx + 1);
 
     setTimeout(() => {
+      if (cdFrame) cdFrame.classList.remove("carousel-horizontal-drag");
       cdCurrentThumb!.remove();
       if (loseImg) loseImg.remove();
       winImg.setAttribute("data-project-thumb", "");
@@ -521,7 +524,7 @@ function init() {
   }
 
   grid.addEventListener("pointerdown", (e) => {
-    if (e.button !== 0) return;
+    if (e.pointerType === "mouse" && e.button !== 0) return;
     if ((e.target as Element).closest("[data-carousel-prev], [data-carousel-next]")) return;
 
     const article = (e.target as Element).closest<HTMLElement>("[data-project-index]");
@@ -555,6 +558,7 @@ function init() {
           cdHorizontal = true;
           cdSetupImages();
           if (!cdFrame) { cdActive = false; return; }
+          cdFrame.classList.add("carousel-horizontal-drag");
           grid.setPointerCapture(e.pointerId);
         } else {
           cdActive = false;
@@ -575,7 +579,7 @@ function init() {
     cdCurrentThumb!.style.transform = `translateX(${pct}%)`;
     if (cdPrevImg) cdPrevImg.style.transform = `translateX(calc(${pct - 100}% + 1px))`;
     if (cdNextImg) cdNextImg.style.transform = `translateX(calc(${pct + 100}% - 1px))`;
-  });
+  }, { passive: false });
 
   grid.addEventListener("pointerup", (e) => {
     if (!cdActive || e.pointerId !== cdPointerId) return;

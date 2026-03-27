@@ -18,7 +18,9 @@ const IMAGE_EXT = /\.(jpe?g|png|gif|webp)$/i;
 /** @param {unknown} obj @param {Set<string>} set */
 function collectPaths(obj, set) {
   if (typeof obj === "string") {
-    if (obj.startsWith("/uploads/") && IMAGE_EXT.test(obj)) set.add(obj);
+    if (obj.startsWith("/uploads/") && IMAGE_EXT.test(obj) && !/\.gif$/i.test(obj)) {
+      set.add(obj);
+    }
     return;
   }
   if (obj && typeof obj === "object") {

@@ -35,6 +35,8 @@ const carouselProjects = workItems.map((item) => ({
           const videoSrc = isVideo ? (first as any).src : "";
           const videoPoster = isVideo ? (first as any).poster : "";
           const videoAutoplay = isVideo && (first as any).autoplay !== false;
+          const firstThumbUrl = thumbs[0] ?? "";
+          const firstThumbIsGif = firstThumbUrl.toLowerCase().endsWith(".gif");
 
           return (
             <article
@@ -71,7 +73,7 @@ const carouselProjects = workItems.map((item) => ({
                       draggable="false"
                       src={thumbs[0]}
                       alt={item.thumbAlt}
-                      loading="lazy"
+                      loading={firstThumbIsGif ? "eager" : "lazy"}
                       decoding="async"
                     />
                   ) : (
@@ -81,7 +83,7 @@ const carouselProjects = workItems.map((item) => ({
                       draggable="false"
                       src={thumbs[0]}
                       alt={item.thumbAlt}
-                      loading="lazy"
+                      loading={firstThumbIsGif ? "eager" : "lazy"}
                       decoding="async"
                     />
                   )}

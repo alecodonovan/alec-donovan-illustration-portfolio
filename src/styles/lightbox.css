@@ -96,6 +96,13 @@
   opacity: 1;
 }
 
+/* Touch / coarse pointer: show custom controls (desktop relies on :hover, which does not apply). */
+@media (hover: none), (pointer: coarse) {
+  .lightbox-video-wrap .lightbox-video-controls {
+    opacity: 1;
+  }
+}
+
 /* Large centered play overlay */
 .lb-play-overlay {
   position: absolute;
@@ -167,9 +174,14 @@
   white-space: nowrap;
 }
 
-/* Carousel frame touch — allow vertical scroll, capture horizontal for drag */
+/* Carousel frame: vertical scroll for page; horizontal handled in JS after axis lock */
 [data-carousel-frame] {
   touch-action: pan-y;
+}
+
+/* While dragging horizontally, prevent iOS/Safari from stealing the gesture for scroll */
+[data-carousel-frame].carousel-horizontal-drag {
+  touch-action: none;
 }
 
 /* Body scroll lock */

@@ -16,6 +16,8 @@ const UPLOAD_IMAGE_EXT = /\.(jpe?g|png|gif|webp)$/i;
 
 /** Smaller asset for grid thumbnails & carousel (full-res still used in lightbox). */
 function thumbUrlForUpload(src: string): string {
+  // Animated GIFs must use the original file; WebP thumbs are only first frame.
+  if (/\.gif$/i.test(src)) return src;
   if (src.startsWith("/uploads/") && UPLOAD_IMAGE_EXT.test(src)) {
     return src.replace(UPLOAD_IMAGE_EXT, "-thumb.webp");
   }

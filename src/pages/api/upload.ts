@@ -38,7 +38,7 @@ export const POST: APIRoute = async ({ request }) => {
   const dest = join(UPLOAD_DIR, uniqueName);
   writeFileSync(dest, buffer);
 
-  if (RASTER_IMAGE_EXT.test(uniqueName)) {
+  if (RASTER_IMAGE_EXT.test(uniqueName) && !/\.gif$/i.test(uniqueName)) {
     const thumbName = uniqueName.replace(RASTER_IMAGE_EXT, "-thumb.webp");
     await sharp(buffer)
       .rotate()
