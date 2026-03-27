@@ -1,5 +1,18 @@
 [
   {
+    "title": "Test",
+    "description": "",
+    "thumbAlt": "Test",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1774575959229-Heart_02_Compressed.jpg",
+        "width": 1080,
+        "height": 1920
+      }
+    ]
+  },
+  {
     "title": "Stat stytling",
     "description": "",
     "thumbAlt": "Stat stytling",
