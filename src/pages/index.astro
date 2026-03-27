@@ -3,6 +3,15 @@ import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
 import { gridThumbSrc, workItems } from "../data/work";
 
+/** First N cards: eager thumbs + immediate grid video start (top of masonry / mobile stack). */
+const EAGER_THUMB_COUNT = 9;
+/** First N get fetchpriority=high on the visible thumb (browser budget ~few highs per page). */
+const HIGH_FETCH_THUMB_COUNT = 3;
+/** Preload hints in <head> for the first visible row (deduped in Layout). */
+const preloadThumbUrls = workItems
+  .slice(0, HIGH_FETCH_THUMB_COUNT)
+  .map((item) => gridThumbSrc(item.slides[0]));
+
 const lightboxProjects = workItems.map((item) => ({
   projectTitle: item.title,
   projectDescription: item.description,
@@ -14,7 +23,7 @@ const carouselProjects = workItems.map((item) => ({
 }));
 ---
 
-<Layout title="Alec Donovan•Work">
+<Layout title="Alec Donovan•Work" preloadImages={preloadThumbUrls}>
   <div
     class="mx-auto max-w-[1600px] px-5 pb-20 pt-8 md:px-10 md:pb-24 md:pt-12 lg:px-14"
   >
@@ -37,6 +46,10 @@ const carouselProjects = workItems.map((item) => ({
           const videoAutoplay = isVideo && (first as any).autoplay !== false;
           const firstThumbUrl = thumbs[0] ?? "";
           const firstThumbIsGif = firstThumbUrl.toLowerCase().endsWith(".gif");
+          const thumbEager =
+            projectIndex < EAGER_THUMB_COUNT || firstThumbIsGif;
+          const thumbFetchPriority =
+            projectIndex < HIGH_FETCH_THUMB_COUNT ? "high" : undefined;
 
           return (
             <article
@@ -57,36 +70,55 @@ const carouselProjects = workItems.map((item) => ({
                   style={`aspect-ratio: ${first.width} / ${first.height};`}
                   data-carousel-frame
                 >
+                  <div
+                    class="work-thumb-skeleton"
+                    data-work-thumb-skeleton
+                    aria-hidden="true"
+                  />
                   {isVideo && videoAutoplay ? (
                     <video
-                      class="absolute inset-0 w-full h-full object-cover object-left-top"
+                      class="absolute inset-0 z-[2] w-full h-full object-cover object-left-top work-thumb-media"
                       data-project-thumb
                       muted
                       loop
                       playsinline
-                      preload="none"
+                      preload={projectIndex < EAGER_THUMB_COUNT
+                        ? "metadata"
+                        : "none"}
                       data-grid-video-src={videoSrc}
+                      {...(projectIndex < EAGER_THUMB_COUNT
+                        ? { "data-grid-video-priority": "" }
+                        : {})}
                       poster={thumbs[0]}
+                      {...(thumbFetchPriority
+                        ? { fetchpriority: thumbFetchPriority }
+                        : {})}
                     />
                   ) : isVideo ? (
                     <img
-                      class="absolute inset-0 w-full h-full object-cover object-left-top"
+                      class="absolute inset-0 z-[2] w-full h-full object-cover object-left-top work-thumb-media"
                       data-project-thumb
                       draggable="false"
                       src={thumbs[0]}
                       alt={item.thumbAlt}
-                      loading={firstThumbIsGif ? "eager" : "lazy"}
+                      loading={thumbEager ? "eager" : "lazy"}
                       decoding="async"
+                      {...(thumbFetchPriority
+                        ? { fetchpriority: thumbFetchPriority }
+                        : {})}
                     />
                   ) : (
                     <img
-                      class="absolute inset-0 w-full h-full object-cover object-left-top"
+                      class="absolute inset-0 z-[2] w-full h-full object-cover object-left-top work-thumb-media"
                       data-project-thumb
                       draggable="false"
                       src={thumbs[0]}
                       alt={item.thumbAlt}
-                      loading={firstThumbIsGif ? "eager" : "lazy"}
+                      loading={thumbEager ? "eager" : "lazy"}
                       decoding="async"
+                      {...(thumbFetchPriority
+                        ? { fetchpriority: thumbFetchPriority }
+                        : {})}
                     />
                   )}
                 </div>

@@ -3,9 +3,12 @@ import "../styles/lightbox.css";
 
 interface Props {
   title: string;
+  /** Hint the browser to fetch key images early (e.g. above-the-fold Work thumbs). */
+  preloadImages?: string[];
 }
 
-const { title } = Astro.props;
+const { title, preloadImages = [] } = Astro.props;
+const uniquePreloads = [...new Set(preloadImages.filter(Boolean))].slice(0, 5);
 ---
 
 <!doctype html>
@@ -23,9 +26,19 @@ const { title } = Astro.props;
       rel="stylesheet"
     />
     <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0..1,0"
       rel="stylesheet"
     />
+    {
+      uniquePreloads.map((href, i) => (
+        <link
+          rel="preload"
+          as="image"
+          href={href}
+          {...(i < 2 ? { fetchpriority: "high" } : {})}
+        />
+      ))
+    }
   </head>
   <body class="min-h-screen bg-surface font-sans text-ink antialiased">
     <slot />

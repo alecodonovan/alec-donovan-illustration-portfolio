@@ -69,10 +69,18 @@ function kickstartLazyGridVideos() {
     const url = video.dataset.gridVideoSrc;
     if (!url) return;
     video.removeAttribute("data-grid-video-src");
+    video.removeAttribute("data-grid-video-priority");
     video.src = url;
     video.muted = true;
     video.play().catch(() => {});
   };
+
+  // Above-the-fold cards: start MP4 immediately (don’t wait for IntersectionObserver).
+  grid
+    .querySelectorAll<HTMLVideoElement>(
+      "video[data-grid-video-priority][data-grid-video-src]",
+    )
+    .forEach((v) => start(v));
 
   const io = new IntersectionObserver(
     (entries) => {

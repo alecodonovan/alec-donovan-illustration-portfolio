@@ -1,8 +1,8 @@
 [
   {
-    "title": "Stat stytling",
+    "title": "Stat styling",
     "description": "",
-    "thumbAlt": "Stat stytling",
+    "thumbAlt": "Stat styling",
     "slides": [
       {
         "kind": "image",
@@ -137,19 +137,19 @@
     "slides": [
       {
         "kind": "image",
-        "src": "/uploads/1774532883931-OakParkMural_02B.jpg",
+        "src": "/uploads/1774625950232-MiniMural_01_Compressed.jpg",
         "width": 1260,
         "height": 1400
       },
       {
         "kind": "image",
-        "src": "/uploads/1774532891090-OakParkMural_03B.jpg",
+        "src": "/uploads/1774625953902-MiniMural_02_Compressed.jpg",
         "width": 1260,
         "height": 1400
       },
       {
         "kind": "image",
-        "src": "/uploads/1774532896808-OakParkMural_04B.jpg",
+        "src": "/uploads/1774625957484-MiniMural_03_Compressed.jpg",
         "width": 1260,
         "height": 1400
       }

@@ -27,7 +27,42 @@ function fmt(s: number) {
 
 const isDesktop = () => window.matchMedia("(min-width: 768px)").matches;
 
-const THUMB_CLASS = "absolute inset-0 w-full h-full object-cover object-left-top";
+const THUMB_CLASS =
+  "absolute inset-0 z-[2] w-full h-full object-cover object-left-top work-thumb-media";
+
+function bindWorkThumbFrame(frame: HTMLElement) {
+  const media = frame.querySelector<HTMLImageElement | HTMLVideoElement>(
+    "[data-project-thumb]",
+  );
+  const skeleton = frame.querySelector("[data-work-thumb-skeleton]");
+  if (!media || !skeleton) return;
+
+  const markReady = () => {
+    frame.classList.add("is-thumb-ready");
+  };
+
+  if (media instanceof HTMLVideoElement) {
+    if (media.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+      markReady();
+    } else {
+      media.addEventListener("loadeddata", markReady, { once: true });
+      media.addEventListener("error", markReady, { once: true });
+    }
+    return;
+  }
+
+  const img = media;
+  if (typeof img.decode === "function") {
+    void img.decode().then(markReady).catch(markReady);
+    return;
+  }
+  if (img.complete && img.naturalWidth > 0) {
+    markReady();
+    return;
+  }
+  img.addEventListener("load", markReady, { once: true });
+  img.addEventListener("error", markReady, { once: true });
+}
 
 function init() {
   const projects = window.__WORK_LIGHTBOX_PROJECTS__;
@@ -56,11 +91,37 @@ function init() {
     }
   }
 
+  grid.querySelectorAll<HTMLElement>("[data-carousel-frame]").forEach((frame) => {
+    bindWorkThumbFrame(frame);
+  });
+
   function createGutter(): HTMLElement {
     const el = document.createElement("div");
     el.className = "lightbox-gutter";
     el.setAttribute("aria-hidden", "true");
     return el;
+  }
+
+  /** Filled Material Symbol (lime); ligature name as text content. */
+  function msIcon(name: string, extraClass = ""): HTMLSpanElement {
+    const s = document.createElement("span");
+    s.className = `material-symbols-outlined ${extraClass}`.trim();
+    s.textContent = name;
+    s.setAttribute("aria-hidden", "true");
+    return s;
+  }
+
+  function videoHasAudioTrack(v: HTMLVideoElement): boolean {
+    try {
+      const at = v.audioTracks;
+      if (at && at.length > 0) return true;
+      if (at && at.length === 0) return false;
+    } catch {
+      /* ignore */
+    }
+    const moz = (v as HTMLVideoElement & { mozHasAudio?: boolean }).mozHasAudio;
+    if (typeof moz === "boolean" && !moz) return false;
+    return true;
   }
 
   function createVideoSlide(slide: Extract<Slide, { kind: "video" }>) {
@@ -72,12 +133,25 @@ function init() {
 
     const shouldAutoplay = slide.autoplayLightbox === true;
 
+    const shimmer = document.createElement("div");
+    shimmer.className = "lb-shimmer-dark";
+    shimmer.setAttribute("aria-hidden", "true");
+
     const video = document.createElement("video");
     video.src = slide.src;
     video.poster = slide.poster;
     video.playsInline = true;
     video.preload = shouldAutoplay ? "auto" : "metadata";
     video.className = "h-full w-full object-contain";
+
+    const revealLbVideo = () => {
+      wrap.classList.add("is-lb-media-ready");
+    };
+    video.addEventListener("loadeddata", revealLbVideo, { once: true });
+    video.addEventListener("error", revealLbVideo, { once: true });
+    if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+      revealLbVideo();
+    }
     if (shouldAutoplay) {
       video.autoplay = true;
       video.muted = true;
@@ -90,58 +164,129 @@ function init() {
     const playBtn = document.createElement("button");
     playBtn.type = "button";
     playBtn.className = "lb-play";
+    const playGlyph = msIcon("play_arrow");
+    playBtn.appendChild(playGlyph);
     playBtn.setAttribute("aria-label", "Play");
-    playBtn.textContent = "\u25B6";
 
-    const timeline = document.createElement("input");
-    timeline.type = "range";
-    timeline.className = "lb-timeline";
-    timeline.min = "0";
-    timeline.max = "1000";
-    timeline.value = "0";
-    timeline.step = "1";
+    const volBtn = document.createElement("button");
+    volBtn.type = "button";
+    volBtn.className = "lb-volume";
+    const volGlyph = msIcon("volume_up");
+    volBtn.appendChild(volGlyph);
+    volBtn.setAttribute("aria-label", "Mute");
+    let hasAudio = true;
+
+    const scrub = document.createElement("div");
+    scrub.className = "lb-scrub";
+    scrub.setAttribute("role", "slider");
+    scrub.setAttribute("aria-valuemin", "0");
+    scrub.setAttribute("aria-valuemax", "1000");
+    scrub.setAttribute("aria-valuenow", "0");
+    scrub.setAttribute("aria-label", "Seek");
+    scrub.tabIndex = 0;
+
+    const scrubTrack = document.createElement("div");
+    scrubTrack.className = "lb-scrub-track";
+    const scrubFill = document.createElement("div");
+    scrubFill.className = "lb-scrub-fill";
+    const scrubThumb = document.createElement("div");
+    scrubThumb.className = "lb-scrub-thumb";
+    scrubThumb.appendChild(msIcon("circle"));
+    scrubTrack.appendChild(scrubFill);
+    scrubTrack.appendChild(scrubThumb);
+    scrub.appendChild(scrubTrack);
 
     const timeDisplay = document.createElement("span");
     timeDisplay.className = "lb-time";
     timeDisplay.textContent = "0:00";
 
     controls.appendChild(playBtn);
-    controls.appendChild(timeline);
+    controls.appendChild(volBtn);
+    controls.appendChild(scrub);
     controls.appendChild(timeDisplay);
 
     const playOverlay = document.createElement("div");
     playOverlay.className = "lb-play-overlay";
-    const playIcon = document.createElement("span");
-    playIcon.textContent = "\u25B6";
-    playOverlay.appendChild(playIcon);
+    const overlayIcon = msIcon("play_circle", "lb-overlay-play-icon");
+    playOverlay.appendChild(overlayIcon);
 
+    wrap.appendChild(shimmer);
     wrap.appendChild(video);
     wrap.appendChild(playOverlay);
     wrap.appendChild(controls);
 
-    if (shouldAutoplay) {
-      playBtn.textContent = "\u23F8";
-      playBtn.setAttribute("aria-label", "Pause");
-      wrap.classList.add("is-playing");
+    let scrubPointerActive = false;
+    let scrubActiveId: number | null = null;
+
+    function scrubPctFromClientX(clientX: number): number {
+      const rect = scrubTrack.getBoundingClientRect();
+      if (rect.width < 1) return 0;
+      const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+      return (x / rect.width) * 1000;
+    }
+
+    function setScrubVisual(p1000: number) {
+      const p = Math.max(0, Math.min(1000, p1000));
+      const pct = p / 10;
+      scrubFill.style.width = `${pct}%`;
+      scrubThumb.style.left = `${pct}%`;
+      scrub.setAttribute("aria-valuenow", String(Math.round(p)));
+    }
+
+    function syncVolUi() {
+      if (!hasAudio) {
+        volGlyph.textContent = "no_sound";
+        volBtn.setAttribute("aria-label", "No audio");
+        volBtn.disabled = true;
+        return;
+      }
+      volBtn.disabled = false;
+      if (video.muted) {
+        volGlyph.textContent = "volume_off";
+        volBtn.setAttribute("aria-label", "Unmute");
+      } else {
+        volGlyph.textContent = "volume_up";
+        volBtn.setAttribute("aria-label", "Mute");
+      }
+    }
+
+    function syncPlayUi() {
+      if (video.paused) {
+        playGlyph.textContent = "play_arrow";
+        playBtn.setAttribute("aria-label", "Play");
+        wrap.classList.remove("is-playing");
+      } else {
+        playGlyph.textContent = "pause";
+        playBtn.setAttribute("aria-label", "Pause");
+        wrap.classList.add("is-playing");
+      }
     }
 
     const togglePlay = () => {
       if (video.paused) {
-        video.play();
-        playBtn.textContent = "\u23F8";
-        playBtn.setAttribute("aria-label", "Pause");
-        wrap.classList.add("is-playing");
+        void video.play().finally(() => syncPlayUi());
       } else {
         video.pause();
-        playBtn.textContent = "\u25B6";
-        playBtn.setAttribute("aria-label", "Play");
-        wrap.classList.remove("is-playing");
+        syncPlayUi();
       }
     };
+
+    if (shouldAutoplay) {
+      playGlyph.textContent = "pause";
+      playBtn.setAttribute("aria-label", "Pause");
+      wrap.classList.add("is-playing");
+    }
 
     playBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       togglePlay();
+    });
+
+    volBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (!hasAudio || volBtn.disabled) return;
+      video.muted = !video.muted;
+      syncVolUi();
     });
 
     playOverlay.addEventListener("click", (e) => {
@@ -155,24 +300,90 @@ function init() {
     });
 
     video.addEventListener("timeupdate", () => {
-      if (!video.duration) return;
-      timeline.value = String((video.currentTime / video.duration) * 1000);
+      if (!video.duration || scrubPointerActive) return;
+      const p = (video.currentTime / video.duration) * 1000;
+      setScrubVisual(p);
       timeDisplay.textContent = `${fmt(video.currentTime)} / ${fmt(video.duration)}`;
     });
 
     video.addEventListener("loadedmetadata", () => {
+      hasAudio = videoHasAudioTrack(video);
+      syncVolUi();
       timeDisplay.textContent = `0:00 / ${fmt(video.duration)}`;
+      setScrubVisual(0);
     });
 
-    timeline.addEventListener("input", () => {
+    video.addEventListener("volumechange", () => {
+      syncVolUi();
+    });
+
+    function applyScrubClientX(clientX: number) {
       if (!video.duration) return;
-      video.currentTime = (parseFloat(timeline.value) / 1000) * video.duration;
+      const p = scrubPctFromClientX(clientX);
+      setScrubVisual(p);
+      video.currentTime = (p / 1000) * video.duration;
+      timeDisplay.textContent = `${fmt(video.currentTime)} / ${fmt(video.duration)}`;
+    }
+
+    scrub.addEventListener("pointerdown", (e) => {
+      e.stopPropagation();
+      if (e.pointerType === "mouse" && e.button !== 0) return;
+      scrubPointerActive = true;
+      scrubActiveId = e.pointerId;
+      try {
+        scrub.setPointerCapture(e.pointerId);
+      } catch {
+        /* ignore */
+      }
+      applyScrubClientX(e.clientX);
+    });
+
+    scrub.addEventListener(
+      "pointermove",
+      (e) => {
+        if (!scrubPointerActive || e.pointerId !== scrubActiveId) return;
+        e.preventDefault();
+        applyScrubClientX(e.clientX);
+      },
+      { passive: false },
+    );
+
+    const endScrub = (e: PointerEvent) => {
+      if (e.pointerId !== scrubActiveId) return;
+      scrubPointerActive = false;
+      scrubActiveId = null;
+      try {
+        scrub.releasePointerCapture(e.pointerId);
+      } catch {
+        /* ignore */
+      }
+    };
+
+    scrub.addEventListener("pointerup", endScrub);
+    scrub.addEventListener("pointercancel", endScrub);
+    scrub.addEventListener("lostpointercapture", endScrub);
+
+    scrub.addEventListener("keydown", (e) => {
+      if (!video.duration) return;
+      const step = (10 / video.duration) * 1000;
+      let p = parseFloat(scrub.getAttribute("aria-valuenow") || "0");
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        p = Math.max(0, p - step);
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        p = Math.min(1000, p + step);
+      } else {
+        return;
+      }
+      setScrubVisual(p);
+      video.currentTime = (p / 1000) * video.duration;
+      timeDisplay.textContent = `${fmt(video.currentTime)} / ${fmt(video.duration)}`;
     });
 
     video.addEventListener("ended", () => {
-      playBtn.textContent = "\u25B6";
-      playBtn.setAttribute("aria-label", "Play");
-      wrap.classList.remove("is-playing");
+      if (video.duration) setScrubVisual(1000);
+      syncPlayUi();
     });
 
     return wrap;
@@ -198,6 +409,15 @@ function init() {
 
     for (const slide of project.slides) {
       if (slide.kind === "image") {
+        const wrap = document.createElement("div");
+        wrap.className = desktop
+          ? "lightbox-slide-img-wrap relative h-full shrink-0"
+          : "lightbox-slide-img-wrap relative w-full shrink-0";
+
+        const skel = document.createElement("div");
+        skel.className = "lb-shimmer-dark";
+        skel.setAttribute("aria-hidden", "true");
+
         const img = document.createElement("img");
         img.src = slide.src;
         img.width = slide.width;
@@ -208,7 +428,21 @@ function init() {
           : "w-full h-auto";
         img.loading = "eager";
         img.draggable = false;
-        slidesEl!.appendChild(img);
+
+        const revealLbImg = () => {
+          wrap.classList.add("is-lb-media-ready");
+        };
+        if (typeof img.decode === "function") {
+          void img.decode().then(revealLbImg).catch(revealLbImg);
+        } else {
+          img.addEventListener("load", revealLbImg, { once: true });
+          img.addEventListener("error", revealLbImg, { once: true });
+          if (img.complete && img.naturalWidth > 0) revealLbImg();
+        }
+
+        wrap.appendChild(skel);
+        wrap.appendChild(img);
+        slidesEl!.appendChild(wrap);
       } else {
         slidesEl!.appendChild(createVideoSlide(slide));
       }
@@ -355,6 +589,8 @@ function init() {
     const currentThumb = article.querySelector<HTMLElement>("[data-project-thumb]");
     if (!frame || !currentThumb) return;
 
+    frame.classList.remove("is-thumb-ready");
+
     transitioning.add(article);
 
     const newImg = document.createElement("img");
@@ -377,6 +613,7 @@ function init() {
       newImg.setAttribute("data-project-thumb", "");
       newImg.style.transition = "";
       newImg.style.transform = "";
+      bindWorkThumbFrame(frame);
       transitioning.delete(article);
     }, 300);
   }
@@ -496,6 +733,8 @@ function init() {
       winImg.setAttribute("data-project-thumb", "");
       winImg.style.transition = "";
       winImg.style.transform = "";
+      const frameEl = article.querySelector<HTMLElement>("[data-carousel-frame]");
+      if (frameEl) bindWorkThumbFrame(frameEl);
       cdFrame = null;
       cdCurrentThumb = null;
       cdPrevImg = null;
