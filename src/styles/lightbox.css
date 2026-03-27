@@ -177,6 +177,7 @@
 /* Carousel frame: vertical scroll for page; horizontal handled in JS after axis lock */
 [data-carousel-frame] {
   touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* While dragging horizontally, prevent iOS/Safari from stealing the gesture for scroll */

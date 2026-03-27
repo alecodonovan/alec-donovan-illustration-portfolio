@@ -44,8 +44,10 @@ const carouselProjects = workItems.map((item) => ({
               data-project-index={String(projectIndex)}
               data-carousel-index="0"
             >
-              <button
-                type="button"
+              <!-- Native <button> breaks touch-drag on iOS; use div + role for the thumb hit area. -->
+              <div
+                role="button"
+                tabindex="0"
                 data-pswp-project={String(projectIndex)}
                 aria-label={`Open ${item.title} gallery`}
                 class="block w-full cursor-pointer text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink"
@@ -88,7 +90,7 @@ const carouselProjects = workItems.map((item) => ({
                     />
                   )}
                 </div>
-              </button>
+              </div>
               <div class="mt-3 flex items-center justify-between gap-4 pb-[20px]">
                 <button
                   type="button"

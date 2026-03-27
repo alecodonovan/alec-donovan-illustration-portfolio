@@ -395,6 +395,7 @@ function init() {
   let cdNextImg: HTMLImageElement | null = null;
   let cdFrameW = 0;
   let cdPointerId: number | null = null;
+  let cdTouchId: number | null = null;
   let cdDidDrag = false;
 
   function cdSetupImages() {
@@ -440,6 +441,7 @@ function init() {
   }
 
   function cdCleanup() {
+    cdTouchId = null;
     if (cdFrame) cdFrame.classList.remove("carousel-horizontal-drag");
     if (cdPrevImg) { cdPrevImg.remove(); cdPrevImg = null; }
     if (cdNextImg) { cdNextImg.remove(); cdNextImg = null; }
@@ -525,6 +527,8 @@ function init() {
 
   grid.addEventListener("pointerdown", (e) => {
     if (e.pointerType === "mouse" && e.button !== 0) return;
+    // Touch uses dedicated touch* listeners (iOS is unreliable for drag inside interactive targets).
+    if (e.pointerType === "touch") return;
     if ((e.target as Element).closest("[data-carousel-prev], [data-carousel-next]")) return;
 
     const article = (e.target as Element).closest<HTMLElement>("[data-project-index]");
@@ -596,12 +600,117 @@ function init() {
 
     if (pct < -threshold) {
       cdSnapTo(1);
-    } else if (pct > threshold) {
+    } else     if (pct > threshold) {
       cdSnapTo(-1);
     } else {
       cdSnapBack();
     }
   });
+
+  // ── Grid carousel — touch (iOS / iPad): pointer capture + move often fail for finger drags ──
+
+  grid.addEventListener(
+    "touchstart",
+    (e) => {
+      if (e.touches.length !== 1) return;
+      const t = e.touches[0];
+      const target = e.target as Element;
+      if (target.closest("[data-carousel-prev], [data-carousel-next]")) return;
+
+      const article = target.closest<HTMLElement>("[data-project-index]");
+      if (!article || transitioning.has(article)) return;
+
+      const pIdx = parseInt(article.dataset.projectIndex || "-1", 10);
+      const cp = carousels[pIdx];
+      if (!cp || cp.thumbs.length <= 1) return;
+
+      cdActive = true;
+      cdDecided = false;
+      cdHorizontal = false;
+      cdStartX = t.clientX;
+      cdStartY = t.clientY;
+      cdArticle = article;
+      cdDidDrag = false;
+      cdPointerId = null;
+      cdTouchId = t.identifier;
+    },
+    { passive: true },
+  );
+
+  function cdTouchMove(e: TouchEvent) {
+    if (!cdActive || cdTouchId === null) return;
+    const t = [...e.touches].find((x) => x.identifier === cdTouchId);
+    if (!t) return;
+
+    const dx = t.clientX - cdStartX;
+    const dy = t.clientY - cdStartY;
+
+    if (!cdDecided) {
+      if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+        cdDecided = true;
+        if (Math.abs(dx) > Math.abs(dy)) {
+          cdHorizontal = true;
+          cdSetupImages();
+          if (!cdFrame) {
+            cdActive = false;
+            cdTouchId = null;
+            return;
+          }
+          cdFrame.classList.add("carousel-horizontal-drag");
+        } else {
+          cdActive = false;
+          cdTouchId = null;
+          return;
+        }
+      }
+      return;
+    }
+
+    if (!cdHorizontal || !cdFrame) return;
+
+    e.preventDefault();
+    cdDidDrag = true;
+
+    const clampedDx = Math.max(-cdFrameW, Math.min(cdFrameW, dx));
+    const pct = (clampedDx / cdFrameW) * 100;
+
+    cdCurrentThumb!.style.transform = `translateX(${pct}%)`;
+    if (cdPrevImg) cdPrevImg.style.transform = `translateX(calc(${pct - 100}% + 1px))`;
+    if (cdNextImg) cdNextImg.style.transform = `translateX(calc(${pct + 100}% - 1px))`;
+  }
+
+  function cdTouchEnd(e: TouchEvent) {
+    if (cdTouchId === null) return;
+    const lifted = [...e.changedTouches].some((x) => x.identifier === cdTouchId);
+    if (!lifted) return;
+
+    const t = [...e.changedTouches].find((x) => x.identifier === cdTouchId);
+    if (!t) return;
+
+    cdActive = false;
+    cdTouchId = null;
+
+    if (!cdHorizontal || !cdDidDrag || !cdFrame) {
+      cdCleanup();
+      return;
+    }
+
+    const dx = t.clientX - cdStartX;
+    const pct = (dx / cdFrameW) * 100;
+    const threshold = 25;
+
+    if (pct < -threshold) {
+      cdSnapTo(1);
+    } else if (pct > threshold) {
+      cdSnapTo(-1);
+    } else {
+      cdSnapBack();
+    }
+  }
+
+  window.addEventListener("touchmove", cdTouchMove, { passive: false });
+  window.addEventListener("touchend", cdTouchEnd, { passive: true });
+  window.addEventListener("touchcancel", cdTouchEnd, { passive: true });
 
   grid.addEventListener("pointercancel", (e) => {
     if (e.pointerId !== cdPointerId) return;
@@ -666,9 +775,20 @@ function init() {
     { capture: true },
   );
 
+  grid.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const trigger = (e.target as Element).closest<HTMLElement>("[data-pswp-project]");
+    if (!trigger || !grid.contains(trigger)) return;
+    if (trigger.tagName === "BUTTON") return;
+    e.preventDefault();
+    const idx = parseInt(trigger.dataset.pswpProject || "-1", 10);
+    if (idx >= 0) open(idx);
+  });
+
   // ── Global fallback for stuck drags ──
 
   window.addEventListener("pointerup", () => {
+    if (cdTouchId !== null) return;
     if (cdActive) {
       cdActive = false;
       if (cdFrame) cdSnapBack(); else cdCleanup();
@@ -678,7 +798,11 @@ function init() {
 
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
-      if (cdActive) { cdActive = false; if (cdFrame) cdSnapBack(); else cdCleanup(); }
+      if (cdTouchId !== null) cdTouchId = null;
+      if (cdActive) {
+        cdActive = false;
+        if (cdFrame) cdSnapBack(); else cdCleanup();
+      }
       if (pointerDown) resetLightboxDrag();
     }
   });
