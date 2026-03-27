@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "generate-thumbs": "node scripts/generate-thumbs.mjs",
-    "prebuild": "node scripts/generate-thumbs.mjs",
-    "build": "astro build",
+    "build": "node scripts/generate-thumbs.mjs && astro build",
     "preview": "astro preview"
   },
   "dependencies": {
