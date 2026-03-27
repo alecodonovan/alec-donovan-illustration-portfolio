@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.astro/
+.netlify/
+.DS_Store
+
+# Local design references (not needed for deploy)
+Illustration Site Reference Images 032426/

@@ -1,0 +1,169 @@
+/* Alec Donovan lightbox — matches charcoal / lime / white comps */
+
+.pswp {
+  --pswp-root-bg: #2d2d2d;
+  --pswp-bg: #2d2d2d;
+  --pswp-root-z-index: 9000;
+}
+
+.pswp .pswp__bg {
+  opacity: 1 !important;
+  background: #2d2d2d !important;
+}
+
+.pswp .pswp__button {
+  color: #ffffff;
+  opacity: 1;
+}
+
+.pswp .pswp__button:hover {
+  opacity: 0.85;
+}
+
+.pswp .pswp__button--arrow {
+  color: #ffffff;
+}
+
+.pswp .pswp__icn {
+  fill: currentColor;
+  color: inherit;
+}
+
+/* Hide default controls that are not in the comps */
+.pswp .pswp__button--close {
+  display: none !important;
+}
+
+.pswp .pswp__counter {
+  display: none !important;
+}
+
+.pswp .pswp__button--zoom {
+  display: none !important;
+}
+
+/* Custom close — lime, top-left */
+.pswp__button--ad-close {
+  position: absolute !important;
+  top: calc(5.5rem + env(safe-area-inset-top));
+  left: max(1.25rem, env(safe-area-inset-left));
+  right: auto !important;
+  width: auto !important;
+  height: auto !important;
+  padding: 0;
+  margin: 0;
+  background: transparent !important;
+  border: 0;
+  box-shadow: none !important;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: "Rethink Sans", system-ui, sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1;
+  color: #ddff00 !important;
+  cursor: pointer;
+}
+
+.pswp__button--ad-close .pswp__icn {
+  display: none;
+}
+
+.pswp__button--ad-close::before {
+  content: "×";
+  font-size: 1.35rem;
+  font-weight: 400;
+  line-height: 1;
+  color: #ddff00;
+}
+
+.pswp__button--ad-close:hover,
+.pswp__button--ad-close:focus-visible {
+  opacity: 0.9;
+  outline: none;
+}
+
+.pswp__button--ad-close:focus-visible {
+  box-shadow: 0 0 0 2px #ddff00;
+}
+
+/* Project caption under stage */
+.pswp__ad-caption {
+  pointer-events: none;
+  position: absolute;
+  left: max(1.25rem, env(safe-area-inset-left));
+  right: max(1.25rem, env(safe-area-inset-right));
+  bottom: max(1.5rem, env(safe-area-inset-bottom));
+  z-index: 30;
+  text-align: left;
+  font-family: "Rethink Sans", system-ui, sans-serif;
+  color: #ffffff;
+}
+
+.pswp__ad-caption-title {
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 0.5rem;
+}
+
+.pswp__ad-caption-desc {
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.45;
+  margin: 0;
+  max-width: 42rem;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* Work page header stays above the overlay with inverted palette */
+body.pswp--open .site-header--work {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10060;
+  box-sizing: border-box;
+  width: 100%;
+  padding-top: max(2rem, env(safe-area-inset-top));
+  padding-right: max(1.25rem, env(safe-area-inset-right));
+  padding-bottom: 1rem;
+  padding-left: max(1.25rem, env(safe-area-inset-left));
+  background: #2d2d2d;
+  color: #ffffff;
+}
+
+@media (min-width: 768px) {
+  body.pswp--open .site-header--work {
+    padding-top: max(3rem, env(safe-area-inset-top));
+    padding-right: max(2.5rem, env(safe-area-inset-right));
+    padding-left: max(2.5rem, env(safe-area-inset-left));
+  }
+}
+
+body.pswp--open .site-header--work a {
+  color: #ffffff !important;
+}
+
+body.pswp--open .site-header--work .site-nav-work {
+  border-color: #ffffff !important;
+}
+
+/* HTML / video slides */
+.pswp-html-slide {
+  width: min(92vw, 1200px);
+  max-height: min(72vh, 800px);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pswp-html-slide video {
+  width: 100%;
+  height: auto;
+  max-height: min(72vh, 800px);
+  border-radius: 0.5rem;
+  background: #000;
+}

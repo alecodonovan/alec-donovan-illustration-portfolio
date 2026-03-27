@@ -1,0 +1,218 @@
+/* Custom lightbox — horizontal scroll gallery */
+
+#lightbox {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+#lightbox.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ── Mobile: vertical scroll layout ── */
+
+.lightbox-body {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.lightbox-slides {
+  flex-direction: column;
+  padding: 0 1.25rem 2rem;
+}
+
+.lightbox-gutter {
+  display: none;
+}
+
+/* ── Desktop: horizontal scroll layout ── */
+
+@media (min-width: 768px) {
+  .lightbox-body {
+    overflow: hidden;
+  }
+
+  .lightbox-slides {
+    flex-direction: row;
+    height: 100%;
+    padding: 0;
+  }
+
+  .lightbox-gutter {
+    display: block;
+    flex-shrink: 0;
+    width: 1.5rem;
+  }
+
+  .lightbox-scroll {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    cursor: grab;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .lightbox-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .lightbox-scroll.is-dragging {
+    cursor: grabbing;
+    user-select: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  .lightbox-gutter {
+    width: 2.5rem;
+  }
+}
+
+/* Custom video player controls */
+.lightbox-video-wrap {
+  position: relative;
+  background: #000;
+}
+
+.lightbox-video-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.625rem 0.75rem;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.65));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.lightbox-video-wrap:hover .lightbox-video-controls,
+.lightbox-video-wrap:focus-within .lightbox-video-controls,
+.lightbox-video-wrap.is-playing .lightbox-video-controls:hover {
+  opacity: 1;
+}
+
+/* Large centered play overlay */
+.lb-play-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.15);
+  transition: opacity 0.3s ease;
+}
+
+.lb-play-overlay span {
+  width: 4.5rem;
+  height: 4.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 1.75rem;
+  padding-left: 0.25rem;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.lb-play-overlay:hover span {
+  transform: scale(1.08);
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.lightbox-video-wrap.is-playing .lb-play-overlay {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.lb-play {
+  flex-shrink: 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0;
+}
+
+.lb-play:hover {
+  color: #ddff00;
+}
+
+.lb-timeline {
+  flex: 1;
+  height: 4px;
+  accent-color: #ddff00;
+  cursor: pointer;
+}
+
+.lb-time {
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Carousel frame touch — allow vertical scroll, capture horizontal for drag */
+[data-carousel-frame] {
+  touch-action: pan-y;
+}
+
+/* Body scroll lock */
+body.lightbox-open {
+  overflow: hidden;
+}
+
+/* Header inversion when lightbox is open */
+body.lightbox-open .site-header--work {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10060;
+  box-sizing: border-box;
+  width: 100%;
+  padding-top: max(2rem, env(safe-area-inset-top));
+  padding-right: max(1.25rem, env(safe-area-inset-right));
+  padding-bottom: 1rem;
+  padding-left: max(1.25rem, env(safe-area-inset-left));
+  background: #2d2d2d;
+  color: #ffffff;
+}
+
+@media (min-width: 768px) {
+  body.lightbox-open .site-header--work {
+    padding-top: max(3rem, env(safe-area-inset-top));
+    padding-right: max(2.5rem, env(safe-area-inset-right));
+    padding-left: max(2.5rem, env(safe-area-inset-left));
+  }
+}
+
+@media (min-width: 1024px) {
+  body.lightbox-open .site-header--work {
+    padding-right: max(3.5rem, env(safe-area-inset-right));
+    padding-left: max(3.5rem, env(safe-area-inset-left));
+  }
+}
+
+body.lightbox-open .site-header--work a {
+  color: #ffffff !important;
+}
+
+body.lightbox-open .site-header--work .site-nav-work {
+  border-color: #ffffff !important;
+}

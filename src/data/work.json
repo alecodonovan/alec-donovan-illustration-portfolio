@@ -1,0 +1,633 @@
+[
+  {
+    "title": "Stat stytling",
+    "description": "",
+    "thumbAlt": "Stat stytling",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1774487384369-AD_Data-01.jpg",
+        "width": 1600,
+        "height": 1600
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774487391457-AD_Data-02.jpg",
+        "width": 1600,
+        "height": 1600
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774487395531-AD_Data-03.jpg",
+        "width": 1600,
+        "height": 1600
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774487399531-AD_Data-04.jpg",
+        "width": 1600,
+        "height": 1600
+      }
+    ]
+  },
+  {
+    "title": "She is Oh Oh!",
+    "description": "I illustrated and animated playful title cards for director Léa Reguillot’s short film about a young woman dreaming in Paris. Part fashion fever dream and part hedonist manifesto, the film is organized into ten rules for enjoying life. It premiered at the Florida Film Festival and won the Audience Award.",
+    "thumbAlt": "She is Oh Oh!",
+    "slides": [
+      {
+        "kind": "video",
+        "width": 1920,
+        "height": 1080,
+        "poster": "/uploads/1774489360278-Measure_1_1920_portfolio_PosterImage.png",
+        "src": "/uploads/1774489371446-Measure_1_1920_portfolio.mp4",
+        "autoplayLightbox": true
+      },
+      {
+        "kind": "video",
+        "src": "/uploads/1774489437632-Measure_2_portfolio_01.mp4",
+        "poster": "/uploads/1774489427267-Measure_2_portfolio_01_PosterImage.png",
+        "width": 1920,
+        "height": 1080,
+        "autoplayLightbox": true,
+        "autoplay": true
+      },
+      {
+        "kind": "video",
+        "src": "/uploads/1774489494947-Measure_3_portfolio_01.mp4",
+        "poster": "/uploads/1774489457970-Measure_3_portfolio_01_PosterImage.png",
+        "width": 1920,
+        "height": 1080,
+        "autoplayLightbox": true,
+        "autoplay": true
+      },
+      {
+        "kind": "video",
+        "src": "/uploads/1774490075926-Measure_4_portfolio_01.mp4",
+        "poster": "/uploads/1774490071576-Measure_4_portfolio_01_PosterImage.png",
+        "width": 1920,
+        "height": 1080,
+        "autoplayLightbox": true,
+        "autoplay": false
+      },
+      {
+        "kind": "video",
+        "src": "/uploads/1774489770127-Measure_5_portfolio_01.mp4",
+        "poster": "/uploads/1774489748184-Measure_5_portfolio_01_PosterImage.png",
+        "width": 3840,
+        "height": 2160,
+        "autoplayLightbox": true,
+        "autoplay": false
+      },
+      {
+        "kind": "video",
+        "src": "/uploads/1774489916563-Measure_7_portfolio_01.mp4",
+        "poster": "/uploads/1774489908548-Measure_7_portfolio_01_PosterImage.png",
+        "width": 1920,
+        "height": 1080,
+        "autoplayLightbox": true,
+        "autoplay": false
+      },
+      {
+        "kind": "video",
+        "src": "/uploads/1774489950344-Measure_8_portfolio_01.mp4",
+        "poster": "/uploads/1774489944108-Measure_8_portfolio_01_PosterImage.png",
+        "width": 1920,
+        "height": 1080,
+        "autoplayLightbox": true,
+        "autoplay": false
+      },
+      {
+        "kind": "video",
+        "src": "/uploads/1774489976512-Measure_9_portfolio_01.mp4",
+        "poster": "/uploads/1774489969963-Measure_9_portfolio_01_PosterImage.png",
+        "width": 1920,
+        "height": 1080,
+        "autoplayLightbox": true,
+        "autoplay": false
+      },
+      {
+        "kind": "video",
+        "src": "/uploads/1774490009165-Measure_10_portfolio_01.mp4",
+        "poster": "/uploads/1774489996551-Measure_10_portfolio_01_PosterImage.png",
+        "width": 1920,
+        "height": 1080,
+        "autoplayLightbox": true,
+        "autoplay": false
+      }
+    ]
+  },
+  {
+    "title": "Hard shell, mushy center",
+    "description": "",
+    "thumbAlt": "Hard shell",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1774554331121-Heart_01_Compressed.jpg",
+        "width": 2048,
+        "height": 2048
+      }
+    ]
+  },
+  {
+    "title": "Mini murals",
+    "description": "The Arts Council in Oak Park commissioned me to contribute their ongoing Mini Murals projects along South Blvd. It's been an honor to have my work included among so many other great local artists.",
+    "thumbAlt": "Mini murals",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1774532883931-OakParkMural_02B.jpg",
+        "width": 1260,
+        "height": 1400
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774532891090-OakParkMural_03B.jpg",
+        "width": 1260,
+        "height": 1400
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774532896808-OakParkMural_04B.jpg",
+        "width": 1260,
+        "height": 1400
+      }
+    ]
+  },
+  {
+    "title": "Junk drawers",
+    "description": "Gallimaufry [noun]: (pronounced gal•uh•MAW•free) is a noun meaning a heterogeneous mixture, jumble, or hodgepodge",
+    "thumbAlt": "Junk drawers",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1774530671796-JunkDrawer_01_Compressed.jpg",
+        "width": 1400,
+        "height": 1400
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774530678181-JunkDrawer_02_Compressed.jpg",
+        "width": 1400,
+        "height": 1400
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774530685478-JunkDrawer_03_Compressed.jpg",
+        "width": 1400,
+        "height": 1400
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774530691082-JunkDrawer_04_Compressed.jpg",
+        "width": 1400,
+        "height": 1400
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774530696693-JunkDrawer_05_Compressed.jpg",
+        "width": 1400,
+        "height": 1400
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774530703476-JunkDrawer_06_Compressed.jpg",
+        "width": 1400,
+        "height": 1400
+      }
+    ]
+  },
+  {
+    "title": "Help! I'm stuck!",
+    "description": "",
+    "thumbAlt": "Help! I'm stuck!",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1774533347494-Stuck_01.png",
+        "width": 2000,
+        "height": 2000
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774533373784-Stuck_02.png",
+        "width": 2000,
+        "height": 2000
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774533466791-Stuck_03.png",
+        "width": 2000,
+        "height": 2000
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774533473584-Stuck_04.png",
+        "width": 2000,
+        "height": 2000
+      }
+    ]
+  },
+  {
+    "title": "Freedom or bust",
+    "description": "",
+    "thumbAlt": "Freedom or bust",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1774533197570-Greenfinch_01_Compressed.jpg",
+        "width": 1080,
+        "height": 1920
+      }
+    ]
+  },
+  {
+    "title": "Freed speech",
+    "description": "",
+    "thumbAlt": "Freed speech",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1774560783297-FreeSpeech_01_Compressed.jpg",
+        "width": 2000,
+        "height": 2000
+      }
+    ]
+  },
+  {
+    "title": "Tall hands",
+    "description": "",
+    "thumbAlt": "Tall hands",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1774560004331-Hands_01_Compressed.jpg",
+        "width": 1080,
+        "height": 1920
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774560009323-Hands_02_Compressed.jpg",
+        "width": 1080,
+        "height": 1920
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774560014226-Hands_03_Compressed.jpg",
+        "width": 1080,
+        "height": 1920
+      }
+    ]
+  },
+  {
+    "title": "A good point at the wrong time",
+    "description": "",
+    "thumbAlt": "A good point",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1774561522798-GoodPoint_01_Compressed.png",
+        "width": 2000,
+        "height": 2000
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774561528981-GoodPoint_02_Compressed.png",
+        "width": 2000,
+        "height": 2000
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774561536631-GoodPoint_03_Compressed.png",
+        "width": 2000,
+        "height": 2000
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774561541122-GoodPoint_04_Compressed.png",
+        "width": 2000,
+        "height": 2000
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774561547190-GoodPoint_05_Compressed.png",
+        "width": 2000,
+        "height": 2000
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774561553464-GoodPoint_06_Compressed.png",
+        "width": 2000,
+        "height": 2000
+      }
+    ]
+  },
+  {
+    "title": "Post Shows",
+    "description": "If I see a show I really like, I'll prolly do a poster for it!",
+    "thumbAlt": "Post Shows",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1774564961005-PostShows_03.jpg",
+        "width": 1400,
+        "height": 2164
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774564967961-PostShows_02.jpg",
+        "width": 1400,
+        "height": 2164
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774564973084-PostShows_01.jpg",
+        "width": 1400,
+        "height": 2164
+      }
+    ]
+  },
+  {
+    "title": "It'll lock up yer lungs, it will",
+    "description": "",
+    "thumbAlt": "Lungs",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1774562210716-Lungs_01_Compressed.png",
+        "width": 2000,
+        "height": 2000
+      }
+    ]
+  },
+  {
+    "title": "Vases",
+    "description": "Pronounced the fancy way.",
+    "thumbAlt": "Vases",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1774563904943-Vase_01_Compressed.png",
+        "width": 1600,
+        "height": 1600
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774563910768-Vase_02_Compressed.png",
+        "width": 1600,
+        "height": 1600
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774563916365-Vase_03_Compressed.png",
+        "width": 1600,
+        "height": 1600
+      }
+    ],
+    "hidden": false
+  },
+  {
+    "title": "Faces",
+    "description": "",
+    "thumbAlt": "Faces",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1774565850187-Faces_01_Compressed.jpg",
+        "width": 2000,
+        "height": 2000
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774565855404-Faces_02_Compressed.jpg",
+        "width": 2000,
+        "height": 2000
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774566325881-Faces_03_Compressed.jpg",
+        "width": 2000,
+        "height": 2200
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774566332747-Faces_04_Compressed.jpg",
+        "width": 2000,
+        "height": 2200
+      }
+    ]
+  },
+  {
+    "title": "Site specific",
+    "description": "",
+    "thumbAlt": "Site specific",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1774566844667-SiteSpecific_01_Compressed.png",
+        "width": 2000,
+        "height": 2000
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774566849626-SiteSpecific_02_Compressed.png",
+        "width": 1500,
+        "height": 1500,
+        "hidden": false
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774566855752-SiteSpecific_03_Compressed.png",
+        "width": 1500,
+        "height": 1500
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774566860368-SiteSpecific_04_Compressed.png",
+        "width": 1000,
+        "height": 1000
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774566864999-SiteSpecific_05_Compressed.png",
+        "width": 2000,
+        "height": 2000
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774566870871-SiteSpecific_06_Compressed.png",
+        "width": 2000,
+        "height": 2000
+      }
+    ]
+  },
+  {
+    "title": "Dream sequences",
+    "description": "",
+    "thumbAlt": "Dream sequences",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1774567408403-DreamSequence_02_Compressed.jpg",
+        "width": 1500,
+        "height": 1500
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774567412753-DreamSequence_01_Compressed.jpg",
+        "width": 1400,
+        "height": 1400
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774567417785-DreamSequence_03_Compressed.jpg",
+        "width": 2000,
+        "height": 2000
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774567425325-DreamSequence_04_Compressed.jpg",
+        "width": 1000,
+        "height": 1000
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774567431107-DreamSequence_05_Compressed.jpg",
+        "width": 1500,
+        "height": 1500
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774567437790-DreamSequence_06_Compressed.jpg",
+        "width": 2000,
+        "height": 2000
+      }
+    ]
+  },
+  {
+    "title": "Body-ody-ody",
+    "description": "",
+    "thumbAlt": "Body-ody-ody",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1774568260429-Body_01_Compressed.jpg",
+        "width": 1500,
+        "height": 1500
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774568264562-Body_02_Compressed.jpg",
+        "width": 1500,
+        "height": 1500
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774568269784-Body_03_Compressed.jpg",
+        "width": 1500,
+        "height": 1500
+      }
+    ]
+  },
+  {
+    "title": "TED Ideas",
+    "description": "I illustrated and animated a short gif for a TED Ideas blog article about self promotion.",
+    "thumbAlt": "TED Ideas",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1774568800378-TedIdeas_SelfPromotion_800px.gif",
+        "width": 800,
+        "height": 480
+      }
+    ]
+  },
+  {
+    "title": "Senseless overstimulation",
+    "description": "",
+    "thumbAlt": "Senseless overstimulation",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1774567996291-Senseless_01_Compressed.png",
+        "width": 2000,
+        "height": 2000
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774568002721-Senseless_02_Compressed.png",
+        "width": 2000,
+        "height": 2000
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774568008838-Senseless_03_Compressed.png",
+        "width": 2000,
+        "height": 2000
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774568013686-Senseless_04_Compressed.png",
+        "width": 2000,
+        "height": 2000
+      }
+    ]
+  },
+  {
+    "title": "Something simple (just kidding)",
+    "description": "",
+    "thumbAlt": "Something simple",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1774569353616-SomethingSimple_01_Compressed.jpg",
+        "width": 2000,
+        "height": 2000
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774569359157-SomethingSimple_02_Compressed.jpg",
+        "width": 2000,
+        "height": 2000
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774569363578-SomethingSimple_03_Compressed.jpg",
+        "width": 2000,
+        "height": 2000
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774569368422-SomethingSimple_04_Compressed.jpg",
+        "width": 2000,
+        "height": 2000
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774569373256-SomethingSimple_05_Compressed.jpg",
+        "width": 2000,
+        "height": 2000
+      }
+    ]
+  },
+  {
+    "title": "Self improvement",
+    "description": "",
+    "thumbAlt": "Self improvement",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1774569557611-SelfImprovement_01_Compressed.jpg",
+        "width": 2000,
+        "height": 2000
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1774569562643-SelfImprovement_02_Compressed.jpg",
+        "width": 2000,
+        "height": 2000
+      }
+    ]
+  }
+]

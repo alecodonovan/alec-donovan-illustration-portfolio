@@ -1,0 +1,917 @@
+---
+export const prerender = false;
+
+import Layout from "../../layouts/Layout.astro";
+import { readProjects } from "../../lib/projects";
+import { readAbout } from "../../lib/about";
+
+const projects = readProjects();
+const aboutContent = readAbout();
+---
+
+<Layout title="Admin — Alec Donovan">
+  <div class="min-h-screen bg-[#f5f5f0] text-ink">
+    <div class="mx-auto max-w-4xl px-5 py-8 md:px-10">
+
+      <header class="flex items-center justify-between border-b border-ink/10 pb-6">
+        <h1 class="text-[1.5rem] font-bold tracking-tight">Admin</h1>
+        <a href="/" class="text-[0.875rem] text-ink/60 underline decoration-ink/30 underline-offset-2 hover:text-ink">
+          &larr; Back to site
+        </a>
+      </header>
+
+      <main class="mt-8">
+        <div class="mb-6 flex items-center justify-between">
+          <h2 class="text-[1.125rem] font-semibold">
+            Projects <span id="project-count" class="font-normal text-ink/50">({projects.length})</span>
+          </h2>
+          <button
+            id="add-btn"
+            type="button"
+            class="rounded-lg bg-ink px-4 py-2 text-[0.8125rem] font-medium text-white hover:bg-ink/80"
+          >
+            + Add Project
+          </button>
+        </div>
+
+        <div id="project-list" class="space-y-2"></div>
+
+        <!-- ── About section ── -->
+        <div class="mt-12 border-t border-ink/10 pt-8">
+          <h2 class="mb-6 text-[1.125rem] font-semibold">About Page</h2>
+          <div class="rounded-xl border border-ink/8 bg-white p-5 space-y-4">
+            <div>
+              <label for="about-bio" class="mb-1 block text-[0.75rem] font-semibold uppercase tracking-wide text-ink/50">Bio Text</label>
+              <textarea id="about-bio" rows="4" class="w-full rounded-lg border border-ink/15 px-3 py-2 text-[0.9375rem] outline-none focus:border-ink/40"></textarea>
+              <p class="mt-1 text-[0.6875rem] text-ink/35">The main paragraph on the About page. The "this email address" link is appended automatically.</p>
+            </div>
+            <div>
+              <label for="about-email" class="mb-1 block text-[0.75rem] font-semibold uppercase tracking-wide text-ink/50">Email Address</label>
+              <input id="about-email" type="email" class="w-full rounded-lg border border-ink/15 px-3 py-2 text-[0.9375rem] outline-none focus:border-ink/40" />
+            </div>
+            <div>
+              <div class="mb-2 flex items-center justify-between">
+                <span class="text-[0.75rem] font-semibold uppercase tracking-wide text-ink/50">Links</span>
+                <button id="add-about-link" type="button" class="rounded bg-ink/5 px-3 py-1 text-[0.75rem] font-medium text-ink hover:bg-ink/10">+ Add Link</button>
+              </div>
+              <div id="about-links-list" class="space-y-2"></div>
+            </div>
+            <div class="flex items-center gap-3 pt-1">
+              <button id="about-save" type="button" class="rounded-lg bg-ink px-5 py-2 text-[0.8125rem] font-medium text-white hover:bg-ink/80">Save About</button>
+              <span id="about-status" class="text-[0.8125rem] text-ink/40"></span>
+            </div>
+          </div>
+        </div>
+
+      </main>
+
+    </div>
+  </div>
+
+  <!-- ── Editor modal ── -->
+  <div
+    id="editor-backdrop"
+    class="fixed inset-0 z-[9000] hidden bg-ink/40"
+  >
+    <div
+      id="editor-panel"
+      class="absolute inset-y-0 right-0 flex w-full max-w-2xl flex-col bg-white shadow-2xl"
+    >
+      <div class="flex items-center justify-between border-b border-ink/10 px-6 py-4">
+        <h3 id="editor-heading" class="text-[1.125rem] font-bold">Edit Project</h3>
+        <button id="editor-close" type="button" class="text-[1.5rem] leading-none text-ink/40 hover:text-ink">&times;</button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto px-6 py-5">
+        <div class="space-y-5">
+          <div>
+            <label for="ed-title" class="mb-1 block text-[0.75rem] font-semibold uppercase tracking-wide text-ink/50">Title</label>
+            <input id="ed-title" type="text" class="w-full rounded-lg border border-ink/15 px-3 py-2 text-[0.9375rem] outline-none focus:border-ink/40" />
+          </div>
+          <div>
+            <label for="ed-desc" class="mb-1 block text-[0.75rem] font-semibold uppercase tracking-wide text-ink/50">Description</label>
+            <textarea id="ed-desc" rows="3" class="w-full rounded-lg border border-ink/15 px-3 py-2 text-[0.9375rem] outline-none focus:border-ink/40"></textarea>
+          </div>
+          <div>
+            <label for="ed-alt" class="mb-1 block text-[0.75rem] font-semibold uppercase tracking-wide text-ink/50">Thumbnail Alt Text</label>
+            <input id="ed-alt" type="text" class="w-full rounded-lg border border-ink/15 px-3 py-2 text-[0.9375rem] outline-none focus:border-ink/40" />
+          </div>
+
+          <div>
+            <div class="mb-2 flex items-center justify-between">
+              <span class="text-[0.75rem] font-semibold uppercase tracking-wide text-ink/50">Slides</span>
+              <button id="add-slide-btn" type="button" class="rounded bg-ink/5 px-3 py-1 text-[0.75rem] font-medium text-ink hover:bg-ink/10">+ Add Slide</button>
+            </div>
+            <div id="slides-list" class="space-y-3"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between border-t border-ink/10 px-6 py-4">
+        <button id="editor-delete" type="button" class="hidden text-[0.8125rem] font-medium text-red-600 hover:text-red-800">Delete Project</button>
+        <div class="ml-auto flex gap-3">
+          <button id="editor-cancel" type="button" class="rounded-lg border border-ink/15 px-4 py-2 text-[0.8125rem] font-medium text-ink hover:bg-ink/5">Cancel</button>
+          <button id="editor-save" type="button" class="rounded-lg bg-ink px-5 py-2 text-[0.8125rem] font-medium text-white hover:bg-ink/80">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Delete confirmation ── -->
+  <div id="delete-backdrop" class="fixed inset-0 z-[9500] hidden items-center justify-center bg-ink/50">
+    <div class="w-full max-w-sm rounded-xl bg-white p-6 shadow-2xl">
+      <h3 class="text-[1rem] font-bold">Delete project?</h3>
+      <p id="delete-name" class="mt-2 text-[0.875rem] text-ink/70"></p>
+      <div class="mt-5 flex justify-end gap-3">
+        <button id="delete-cancel" type="button" class="rounded-lg border border-ink/15 px-4 py-2 text-[0.8125rem] font-medium hover:bg-ink/5">Cancel</button>
+        <button id="delete-confirm" type="button" class="rounded-lg bg-red-600 px-4 py-2 text-[0.8125rem] font-medium text-white hover:bg-red-700">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline define:vars={{ initialProjects: projects, initialAbout: aboutContent }}>
+    window.__ADMIN_PROJECTS__ = initialProjects;
+    window.__ADMIN_ABOUT__ = initialAbout;
+  </script>
+
+  <script>
+    type SlideData =
+      | { kind: "image"; src: string; width: number; height: number; hidden?: boolean }
+      | { kind: "video"; src: string; poster: string; width: number; height: number; autoplay?: boolean; autoplayLightbox?: boolean; hidden?: boolean };
+
+    type ProjectData = {
+      title: string;
+      description: string;
+      thumbAlt: string;
+      hidden?: boolean;
+      slides: SlideData[];
+    };
+
+    let projects: ProjectData[] = (window as any).__ADMIN_PROJECTS__ ?? [];
+    let editingIndex: number | null = null;
+    let editorSlides: SlideData[] = [];
+
+    const listEl = document.getElementById("project-list")!;
+    const countEl = document.getElementById("project-count")!;
+    const addBtn = document.getElementById("add-btn")!;
+
+    const backdrop = document.getElementById("editor-backdrop")!;
+    const heading = document.getElementById("editor-heading")!;
+    const closeBtn = document.getElementById("editor-close")!;
+    const cancelBtn = document.getElementById("editor-cancel")!;
+    const saveBtn = document.getElementById("editor-save")!;
+    const deleteBtn = document.getElementById("editor-delete")!;
+    const addSlideBtn = document.getElementById("add-slide-btn")!;
+
+    const edTitle = document.getElementById("ed-title") as HTMLInputElement;
+    const edDesc = document.getElementById("ed-desc") as HTMLTextAreaElement;
+    const edAlt = document.getElementById("ed-alt") as HTMLInputElement;
+    const slidesListEl = document.getElementById("slides-list")!;
+
+    const deleteBackdrop = document.getElementById("delete-backdrop")!;
+    const deleteName = document.getElementById("delete-name")!;
+    const deleteCancel = document.getElementById("delete-cancel")!;
+    const deleteConfirm = document.getElementById("delete-confirm")!;
+
+    // ── Upload helpers ──
+
+    async function uploadFile(file: File): Promise<string> {
+      const form = new FormData();
+      form.append("file", file);
+      const res = await fetch("/api/upload", { method: "POST", body: form });
+      if (!res.ok) throw new Error("Upload failed");
+      const { url } = await res.json();
+      return url;
+    }
+
+    function getImageDims(file: File): Promise<{ width: number; height: number }> {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => { resolve({ width: img.naturalWidth, height: img.naturalHeight }); URL.revokeObjectURL(img.src); };
+        img.onerror = () => { resolve({ width: 0, height: 0 }); URL.revokeObjectURL(img.src); };
+        img.src = URL.createObjectURL(file);
+      });
+    }
+
+    function getVideoDims(file: File): Promise<{ width: number; height: number }> {
+      return new Promise((resolve) => {
+        const vid = document.createElement("video");
+        vid.onloadedmetadata = () => { resolve({ width: vid.videoWidth, height: vid.videoHeight }); URL.revokeObjectURL(vid.src); };
+        vid.onerror = () => { resolve({ width: 0, height: 0 }); URL.revokeObjectURL(vid.src); };
+        vid.src = URL.createObjectURL(file);
+      });
+    }
+
+    function createDropZone(opts: {
+      accept: string;
+      label: string;
+      previewUrl: string;
+      onUpload: (result: { url: string; width: number; height: number }) => void;
+    }): HTMLElement {
+      const zone = document.createElement("div");
+      zone.className = "relative flex cursor-pointer items-center gap-3 rounded-lg border-2 border-dashed border-ink/12 p-2.5 transition-colors hover:border-ink/25";
+
+      const preview = document.createElement("div");
+      preview.className = "flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded bg-ink/5";
+      if (opts.previewUrl) {
+        const img = document.createElement("img");
+        img.src = opts.previewUrl;
+        img.className = "h-full w-full object-cover";
+        img.alt = "";
+        preview.appendChild(img);
+      } else {
+        const placeholder = document.createElement("span");
+        placeholder.className = "text-[1.25rem] text-ink/20";
+        placeholder.textContent = opts.accept.startsWith("video") ? "🎬" : "🖼";
+        preview.appendChild(placeholder);
+      }
+
+      const textArea = document.createElement("div");
+      textArea.className = "min-w-0 flex-1";
+
+      const labelEl = document.createElement("div");
+      labelEl.className = "text-[0.75rem] text-ink/50";
+      labelEl.innerHTML = `${opts.label} &mdash; <span class="font-medium underline">browse</span> or drop`;
+
+      const status = document.createElement("div");
+      status.className = "mt-0.5 hidden text-[0.6875rem] text-ink/35";
+
+      textArea.appendChild(labelEl);
+      textArea.appendChild(status);
+
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = opts.accept;
+      input.className = "hidden";
+
+      zone.appendChild(preview);
+      zone.appendChild(textArea);
+      zone.appendChild(input);
+
+      async function handleFile(file: File) {
+        status.textContent = "Uploading…";
+        status.classList.remove("hidden");
+        zone.style.borderColor = "rgba(45,45,45,0.25)";
+        zone.style.pointerEvents = "none";
+
+        try {
+          const url = await uploadFile(file);
+          let dims = { width: 0, height: 0 };
+          if (file.type.startsWith("image/")) dims = await getImageDims(file);
+          else if (file.type.startsWith("video/")) dims = await getVideoDims(file);
+
+          status.textContent = "✓ Uploaded";
+          status.style.color = "#16a34a";
+          zone.style.borderColor = "";
+          zone.style.pointerEvents = "";
+
+          opts.onUpload({ url, ...dims });
+
+          setTimeout(() => renderSlides(), 600);
+        } catch {
+          status.textContent = "Upload failed";
+          status.style.color = "#dc2626";
+          zone.style.pointerEvents = "";
+          setTimeout(() => { status.classList.add("hidden"); status.style.color = ""; zone.style.borderColor = ""; }, 2000);
+        }
+      }
+
+      zone.addEventListener("click", (e) => {
+        if ((e.target as Element).tagName !== "INPUT") input.click();
+      });
+
+      input.addEventListener("change", () => {
+        if (input.files?.[0]) handleFile(input.files[0]);
+      });
+
+      zone.addEventListener("dragover", (e) => { e.preventDefault(); zone.classList.add("border-ink/30", "bg-ink/[0.03]"); });
+      zone.addEventListener("dragleave", () => { zone.classList.remove("border-ink/30", "bg-ink/[0.03]"); });
+      zone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        zone.classList.remove("border-ink/30", "bg-ink/[0.03]");
+        if (e.dataTransfer?.files?.[0]) handleFile(e.dataTransfer.files[0]);
+      });
+
+      return zone;
+    }
+
+    // ── Render project list ──
+
+    function renderList() {
+      countEl.textContent = `(${projects.length})`;
+      listEl.innerHTML = "";
+
+      const numCols = 3;
+
+      projects.forEach((p, i) => {
+        const gridRow = Math.floor(i / numCols) + 1;
+        const gridCol = (i % numCols) + 1;
+        const colLabels = ["L", "C", "R"];
+
+        if (i % numCols === 0 && projects.length > 1) {
+          const header = document.createElement("div");
+          header.className = "mt-4 mb-1 flex items-center gap-2 first:mt-0";
+          const label = document.createElement("span");
+          label.className = "text-[0.6875rem] font-semibold uppercase tracking-wider text-ink/35";
+          label.textContent = `Row ${gridRow}`;
+          const line = document.createElement("span");
+          line.className = "flex-1 border-t border-ink/8";
+          header.appendChild(label);
+          header.appendChild(line);
+          listEl.appendChild(header);
+        }
+
+        const row = document.createElement("div");
+        row.className =
+          `group flex items-center gap-3 rounded-lg border border-ink/8 bg-white px-4 py-3 transition-colors hover:border-ink/20${p.hidden ? " opacity-45" : ""}`;
+        row.draggable = true;
+        row.dataset.projectIdx = String(i);
+
+        const grip = document.createElement("div");
+        grip.className = "shrink-0 cursor-grab text-ink/20 hover:text-ink/40 active:cursor-grabbing select-none";
+        grip.innerHTML = '<span class="material-symbols-outlined" style="font-size: 20px; font-variation-settings: \'opsz\' 20;">drag_indicator</span>';
+
+        const thumb = document.createElement("div");
+        thumb.className = "h-10 w-10 shrink-0 overflow-hidden rounded bg-ink/5";
+        if (p.slides.length > 0) {
+          const img = document.createElement("img");
+          const s = p.slides[0];
+          img.src = s.kind === "video" ? s.poster : s.src;
+          img.className = "h-full w-full object-cover";
+          img.alt = "";
+          thumb.appendChild(img);
+        }
+
+        const info = document.createElement("div");
+        info.className = "min-w-0 flex-1";
+        const title = document.createElement("div");
+        title.className = "truncate text-[0.875rem] font-medium";
+        title.textContent = p.title || "(untitled)";
+        const meta = document.createElement("div");
+        meta.className = "text-[0.75rem] text-ink/45";
+        meta.textContent = `${p.slides.length} slide${p.slides.length !== 1 ? "s" : ""} · Row ${gridRow} · ${colLabels[gridCol - 1] ?? ""}${p.hidden ? " · Hidden" : ""}`;
+
+        info.appendChild(title);
+        info.appendChild(meta);
+
+        const actions = document.createElement("div");
+        actions.className = "flex shrink-0 gap-2";
+
+        const visBtn = document.createElement("button");
+        visBtn.type = "button";
+        visBtn.className =
+          "rounded-md border border-ink/10 px-3 py-1 text-[0.75rem] font-medium text-ink/60 hover:border-ink/25 hover:text-ink";
+        visBtn.textContent = p.hidden ? "Show" : "Hide";
+        visBtn.addEventListener("click", () => toggleVisibility(i));
+
+        const editBtn = document.createElement("button");
+        editBtn.type = "button";
+        editBtn.className =
+          "rounded-md border border-ink/10 px-3 py-1 text-[0.75rem] font-medium text-ink/60 hover:border-ink/25 hover:text-ink";
+        editBtn.textContent = "Edit";
+        editBtn.addEventListener("click", () => openEditor(i));
+
+        const delBtn = document.createElement("button");
+        delBtn.type = "button";
+        delBtn.className =
+          "rounded-md border border-red-200 px-3 py-1 text-[0.75rem] font-medium text-red-400 hover:border-red-400 hover:text-red-600";
+        delBtn.textContent = "Delete";
+        delBtn.addEventListener("click", () => confirmDelete(i));
+
+        actions.appendChild(visBtn);
+        actions.appendChild(editBtn);
+        actions.appendChild(delBtn);
+
+        row.appendChild(grip);
+        row.appendChild(thumb);
+        row.appendChild(info);
+        row.appendChild(actions);
+        listEl.appendChild(row);
+      });
+    }
+
+    // ── Toggle visibility ──
+
+    async function toggleVisibility(index: number) {
+      const p = projects[index];
+      const newHidden = !p.hidden;
+      const updated = { ...p, hidden: newHidden };
+
+      const res = await fetch(`/api/projects/${index}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updated),
+      });
+
+      if (res.ok) {
+        projects[index] = updated;
+        renderList();
+      }
+    }
+
+    // ── Drag-and-drop reorder ──
+
+    let dragFromIdx: number | null = null;
+    let dropIndicator: HTMLElement | null = null;
+
+    function removeDropIndicator() {
+      if (dropIndicator) { dropIndicator.remove(); dropIndicator = null; }
+    }
+
+    listEl.addEventListener("dragstart", (e) => {
+      const row = (e.target as Element).closest("[data-project-idx]") as HTMLElement;
+      if (!row) return;
+      dragFromIdx = parseInt(row.dataset.projectIdx!, 10);
+      row.style.opacity = "0.35";
+      e.dataTransfer!.effectAllowed = "move";
+      e.dataTransfer!.setData("text/plain", row.dataset.projectIdx!);
+    });
+
+    listEl.addEventListener("dragend", () => {
+      dragFromIdx = null;
+      removeDropIndicator();
+      listEl.querySelectorAll<HTMLElement>("[data-project-idx]").forEach(r => {
+        r.style.opacity = "";
+      });
+    });
+
+    listEl.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      e.dataTransfer!.dropEffect = "move";
+
+      const row = (e.target as Element).closest("[data-project-idx]") as HTMLElement;
+      if (!row || dragFromIdx === null) return;
+
+      const rect = row.getBoundingClientRect();
+      const insertBefore = e.clientY < rect.top + rect.height / 2;
+
+      removeDropIndicator();
+      dropIndicator = document.createElement("div");
+      dropIndicator.className = "pointer-events-none";
+      dropIndicator.style.cssText = "height:3px;background:#ddff00;border-radius:2px;margin:0 4px -2px;position:relative;z-index:10;";
+
+      if (insertBefore) {
+        row.parentNode!.insertBefore(dropIndicator, row);
+      } else {
+        row.parentNode!.insertBefore(dropIndicator, row.nextSibling);
+      }
+    });
+
+    listEl.addEventListener("dragleave", (e) => {
+      if (!listEl.contains(e.relatedTarget as Node)) removeDropIndicator();
+    });
+
+    listEl.addEventListener("drop", async (e) => {
+      e.preventDefault();
+      removeDropIndicator();
+
+      const row = (e.target as Element).closest("[data-project-idx]") as HTMLElement;
+      if (!row || dragFromIdx === null) return;
+
+      const toRowIdx = parseInt(row.dataset.projectIdx!, 10);
+      const rect = row.getBoundingClientRect();
+      const insertBefore = e.clientY < rect.top + rect.height / 2;
+
+      let targetIdx = insertBefore ? toRowIdx : toRowIdx + 1;
+      if (targetIdx > dragFromIdx) targetIdx--;
+      if (targetIdx === dragFromIdx) { dragFromIdx = null; return; }
+
+      const order = projects.map((_, i) => i);
+      const [removed] = order.splice(dragFromIdx, 1);
+      order.splice(targetIdx, 0, removed);
+
+      const res = await fetch("/api/projects/reorder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ order }),
+      });
+
+      if (res.ok) {
+        const [moved] = projects.splice(dragFromIdx, 1);
+        projects.splice(targetIdx, 0, moved);
+        renderList();
+      }
+
+      dragFromIdx = null;
+    });
+
+    // ── Editor ──
+
+    function openEditor(index: number | null) {
+      editingIndex = index;
+
+      if (index !== null) {
+        const p = projects[index];
+        heading.textContent = "Edit Project";
+        edTitle.value = p.title;
+        edDesc.value = p.description;
+        edAlt.value = p.thumbAlt;
+        editorSlides = JSON.parse(JSON.stringify(p.slides));
+        deleteBtn.classList.remove("hidden");
+      } else {
+        heading.textContent = "New Project";
+        edTitle.value = "";
+        edDesc.value = "";
+        edAlt.value = "";
+        editorSlides = [];
+        deleteBtn.classList.add("hidden");
+      }
+
+      renderSlides();
+      backdrop.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeEditor() {
+      backdrop.classList.add("hidden");
+      document.body.style.overflow = "";
+    }
+
+    function renderSlides() {
+      slidesListEl.innerHTML = "";
+
+      editorSlides.forEach((s, i) => {
+        const card = document.createElement("div");
+        card.className = `rounded-lg border border-ink/10 bg-ink/[0.02] p-3${s.hidden ? " opacity-45" : ""}`;
+
+        const topRow = document.createElement("div");
+        topRow.className = "mb-2 flex items-center justify-between";
+
+        const badgeWrap = document.createElement("div");
+        badgeWrap.className = "flex items-center gap-2";
+
+        const badge = document.createElement("span");
+        badge.className =
+          "rounded bg-ink/8 px-2 py-0.5 text-[0.6875rem] font-semibold uppercase tracking-wide text-ink/50";
+        badge.textContent = s.kind === "video" ? "Video" : "Image";
+
+        if (s.hidden) {
+          const hiddenBadge = document.createElement("span");
+          hiddenBadge.className = "rounded bg-amber-100 px-2 py-0.5 text-[0.6875rem] font-semibold uppercase tracking-wide text-amber-600";
+          hiddenBadge.textContent = "Hidden";
+          badgeWrap.appendChild(hiddenBadge);
+        }
+        badgeWrap.appendChild(badge);
+
+        const controls = document.createElement("div");
+        controls.className = "flex items-center gap-1";
+
+        if (i > 0) {
+          const up = document.createElement("button");
+          up.type = "button";
+          up.className = "rounded px-1 text-[0.6875rem] text-ink/30 hover:text-ink";
+          up.textContent = "▲";
+          up.addEventListener("click", () => { [editorSlides[i - 1], editorSlides[i]] = [editorSlides[i], editorSlides[i - 1]]; renderSlides(); });
+          controls.appendChild(up);
+        }
+        if (i < editorSlides.length - 1) {
+          const down = document.createElement("button");
+          down.type = "button";
+          down.className = "rounded px-1 text-[0.6875rem] text-ink/30 hover:text-ink";
+          down.textContent = "▼";
+          down.addEventListener("click", () => { [editorSlides[i], editorSlides[i + 1]] = [editorSlides[i + 1], editorSlides[i]]; renderSlides(); });
+          controls.appendChild(down);
+        }
+
+        const kindToggle = document.createElement("button");
+        kindToggle.type = "button";
+        kindToggle.className = "ml-2 rounded bg-ink/5 px-2 py-0.5 text-[0.6875rem] text-ink/50 hover:bg-ink/10 hover:text-ink";
+        kindToggle.textContent = s.kind === "image" ? "→ Video" : "→ Image";
+        kindToggle.addEventListener("click", () => {
+          if (s.kind === "image") {
+            editorSlides[i] = { kind: "video", src: s.src, poster: "", width: s.width, height: s.height, hidden: s.hidden };
+          } else {
+            editorSlides[i] = { kind: "image", src: s.src, width: s.width, height: s.height, hidden: s.hidden };
+          }
+          renderSlides();
+        });
+        controls.appendChild(kindToggle);
+
+        const slideVisBtn = document.createElement("button");
+        slideVisBtn.type = "button";
+        slideVisBtn.className = "ml-2 rounded bg-ink/5 px-2 py-0.5 text-[0.6875rem] text-ink/50 hover:bg-ink/10 hover:text-ink";
+        slideVisBtn.textContent = s.hidden ? "Show" : "Hide";
+        slideVisBtn.addEventListener("click", () => { (editorSlides[i] as any).hidden = !s.hidden; renderSlides(); });
+        controls.appendChild(slideVisBtn);
+
+        const removeBtn = document.createElement("button");
+        removeBtn.type = "button";
+        removeBtn.className = "ml-2 rounded px-1.5 py-0.5 text-[0.75rem] text-red-400 hover:bg-red-50 hover:text-red-600";
+        removeBtn.textContent = "✕";
+        removeBtn.addEventListener("click", () => { editorSlides.splice(i, 1); renderSlides(); });
+        controls.appendChild(removeBtn);
+
+        topRow.appendChild(badgeWrap);
+        topRow.appendChild(controls);
+        card.appendChild(topRow);
+
+        const previewSrc = s.kind === "video" ? s.poster : s.src;
+
+        if (s.kind === "image") {
+          card.appendChild(createDropZone({
+            accept: "image/*",
+            label: "Upload image",
+            previewUrl: previewSrc || "",
+            onUpload: (r) => {
+              (editorSlides[i] as any).src = r.url;
+              if (r.width) (editorSlides[i] as any).width = r.width;
+              if (r.height) (editorSlides[i] as any).height = r.height;
+            },
+          }));
+        } else {
+          card.appendChild(createDropZone({
+            accept: "video/*",
+            label: "Upload video",
+            previewUrl: "",
+            onUpload: (r) => {
+              (editorSlides[i] as any).src = r.url;
+              if (r.width) (editorSlides[i] as any).width = r.width;
+              if (r.height) (editorSlides[i] as any).height = r.height;
+            },
+          }));
+          card.appendChild(createDropZone({
+            accept: "image/*",
+            label: "Upload poster image",
+            previewUrl: s.poster || "",
+            onUpload: (r) => { (editorSlides[i] as any).poster = r.url; },
+          }));
+
+          const autoplayWrap = document.createElement("div");
+          autoplayWrap.className = "mt-2 flex flex-wrap gap-x-5 gap-y-1";
+
+          const thumbRow = document.createElement("label");
+          thumbRow.className = "flex cursor-pointer items-center gap-2";
+          const thumbCheck = document.createElement("input");
+          thumbCheck.type = "checkbox";
+          thumbCheck.checked = s.autoplay !== false;
+          thumbCheck.className = "h-4 w-4 rounded border-ink/20 accent-ink";
+          thumbCheck.addEventListener("change", () => { (editorSlides[i] as any).autoplay = thumbCheck.checked; });
+          const thumbLabel = document.createElement("span");
+          thumbLabel.className = "text-[0.8125rem] text-ink/60";
+          thumbLabel.textContent = "Autoplay in thumbnail";
+          thumbRow.appendChild(thumbCheck);
+          thumbRow.appendChild(thumbLabel);
+
+          const lbRow = document.createElement("label");
+          lbRow.className = "flex cursor-pointer items-center gap-2";
+          const lbCheck = document.createElement("input");
+          lbCheck.type = "checkbox";
+          lbCheck.checked = s.autoplayLightbox === true;
+          lbCheck.className = "h-4 w-4 rounded border-ink/20 accent-ink";
+          lbCheck.addEventListener("change", () => { (editorSlides[i] as any).autoplayLightbox = lbCheck.checked; });
+          const lbLabel = document.createElement("span");
+          lbLabel.className = "text-[0.8125rem] text-ink/60";
+          lbLabel.textContent = "Autoplay in lightbox";
+          lbRow.appendChild(lbCheck);
+          lbRow.appendChild(lbLabel);
+
+          autoplayWrap.appendChild(thumbRow);
+          autoplayWrap.appendChild(lbRow);
+          card.appendChild(autoplayWrap);
+        }
+
+        const fields = document.createElement("div");
+        fields.className = "mt-2 space-y-2";
+
+        const srcField = makeField(`src-${i}`, "Source URL", s.src, (v) => { (editorSlides[i] as any).src = v; });
+        fields.appendChild(srcField);
+
+        if (s.kind === "video") {
+          fields.appendChild(makeField(`poster-${i}`, "Poster URL", s.poster, (v) => { (editorSlides[i] as any).poster = v; }));
+        }
+
+        const dims = document.createElement("div");
+        dims.className = "flex gap-2";
+        dims.appendChild(makeField(`w-${i}`, "Width", String(s.width), (v) => { (editorSlides[i] as any).width = parseInt(v, 10) || 0; }, "number", "flex-1"));
+        dims.appendChild(makeField(`h-${i}`, "Height", String(s.height), (v) => { (editorSlides[i] as any).height = parseInt(v, 10) || 0; }, "number", "flex-1"));
+        fields.appendChild(dims);
+
+        const toggle = document.createElement("details");
+        toggle.className = "group/det";
+        const summary = document.createElement("summary");
+        summary.className = "cursor-pointer text-[0.6875rem] text-ink/30 hover:text-ink/50 select-none";
+        summary.textContent = "Show URL fields";
+        toggle.appendChild(summary);
+        toggle.appendChild(fields);
+        card.appendChild(toggle);
+        slidesListEl.appendChild(card);
+      });
+    }
+
+    function makeField(
+      id: string,
+      label: string,
+      value: string,
+      onChange: (v: string) => void,
+      type = "text",
+      wrapClass = "",
+    ): HTMLElement {
+      const wrap = document.createElement("div");
+      if (wrapClass) wrap.className = wrapClass;
+
+      const lbl = document.createElement("label");
+      lbl.htmlFor = id;
+      lbl.className = "mb-0.5 block text-[0.6875rem] text-ink/40";
+      lbl.textContent = label;
+
+      const input = document.createElement("input");
+      input.id = id;
+      input.type = type;
+      input.value = value;
+      input.className = "w-full rounded border border-ink/12 px-2 py-1 text-[0.8125rem] outline-none focus:border-ink/30";
+      input.addEventListener("input", () => onChange(input.value));
+
+      wrap.appendChild(lbl);
+      wrap.appendChild(input);
+      return wrap;
+    }
+
+    // ── Save ──
+
+    async function save() {
+      const data: ProjectData = {
+        title: edTitle.value.trim(),
+        description: edDesc.value.trim(),
+        thumbAlt: edAlt.value.trim() || edTitle.value.trim(),
+        slides: editorSlides,
+      };
+
+      if (!data.title) {
+        edTitle.focus();
+        edTitle.style.borderColor = "#ef4444";
+        return;
+      }
+
+      let res: Response;
+      if (editingIndex !== null) {
+        res = await fetch(`/api/projects/${editingIndex}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+      } else {
+        res = await fetch("/api/projects", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+      }
+
+      if (res.ok) {
+        if (editingIndex !== null) {
+          projects[editingIndex] = data;
+        } else {
+          projects.push(data);
+        }
+        renderList();
+        closeEditor();
+      }
+    }
+
+    // ── Delete ──
+
+    let pendingDeleteIndex: number | null = null;
+
+    function confirmDelete(index: number) {
+      pendingDeleteIndex = index;
+      deleteName.textContent = `"${projects[index].title}" will be permanently removed.`;
+      deleteBackdrop.classList.remove("hidden");
+      deleteBackdrop.classList.add("flex");
+    }
+
+    async function doDelete() {
+      if (pendingDeleteIndex === null) return;
+
+      const res = await fetch(`/api/projects/${pendingDeleteIndex}`, { method: "DELETE" });
+      if (res.ok) {
+        projects.splice(pendingDeleteIndex!, 1);
+        renderList();
+        closeEditor();
+      }
+
+      deleteBackdrop.classList.add("hidden");
+      deleteBackdrop.classList.remove("flex");
+      pendingDeleteIndex = null;
+    }
+
+    // ── Wire up events ──
+
+    addBtn.addEventListener("click", () => openEditor(null));
+    closeBtn.addEventListener("click", closeEditor);
+    cancelBtn.addEventListener("click", closeEditor);
+    saveBtn.addEventListener("click", save);
+    backdrop.addEventListener("click", (e) => { if (e.target === backdrop) closeEditor(); });
+
+    deleteBtn.addEventListener("click", () => {
+      if (editingIndex !== null) {
+        closeEditor();
+        confirmDelete(editingIndex);
+      }
+    });
+
+    addSlideBtn.addEventListener("click", () => {
+      editorSlides.push({ kind: "image", src: "", width: 1600, height: 2000 });
+      renderSlides();
+      slidesListEl.lastElementChild?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    });
+
+    deleteCancel.addEventListener("click", () => {
+      deleteBackdrop.classList.add("hidden");
+      deleteBackdrop.classList.remove("flex");
+      pendingDeleteIndex = null;
+    });
+    deleteConfirm.addEventListener("click", doDelete);
+
+    edTitle.addEventListener("input", () => { edTitle.style.borderColor = ""; });
+
+    // ── About page ──
+
+    const aboutBio = document.getElementById("about-bio") as HTMLTextAreaElement;
+    const aboutEmail = document.getElementById("about-email") as HTMLInputElement;
+    const aboutLinksList = document.getElementById("about-links-list")!;
+    const addAboutLinkBtn = document.getElementById("add-about-link")!;
+    const aboutSaveBtn = document.getElementById("about-save")!;
+    const aboutStatus = document.getElementById("about-status")!;
+
+    const aboutData = (window as any).__ADMIN_ABOUT__ ?? {};
+    aboutBio.value = aboutData.bio ?? "";
+    aboutEmail.value = aboutData.email ?? "";
+
+    type AboutLink = { text: string; url: string };
+    let aboutLinks: AboutLink[] = Array.isArray(aboutData.links) ? [...aboutData.links] : [];
+
+    function renderAboutLinks() {
+      aboutLinksList.innerHTML = "";
+      aboutLinks.forEach((link, i) => {
+        const row = document.createElement("div");
+        row.className = "flex items-center gap-2";
+
+        const textInput = document.createElement("input");
+        textInput.type = "text";
+        textInput.value = link.text;
+        textInput.placeholder = "Link text";
+        textInput.className = "flex-1 rounded-lg border border-ink/15 px-3 py-2 text-[0.875rem] outline-none focus:border-ink/40";
+        textInput.addEventListener("input", () => { aboutLinks[i].text = textInput.value; });
+
+        const urlInput = document.createElement("input");
+        urlInput.type = "url";
+        urlInput.value = link.url;
+        urlInput.placeholder = "https://…";
+        urlInput.className = "flex-1 rounded-lg border border-ink/15 px-3 py-2 text-[0.875rem] outline-none focus:border-ink/40";
+        urlInput.addEventListener("input", () => { aboutLinks[i].url = urlInput.value; });
+
+        const removeBtn = document.createElement("button");
+        removeBtn.type = "button";
+        removeBtn.className = "shrink-0 rounded px-1.5 py-0.5 text-[0.75rem] text-red-400 hover:bg-red-50 hover:text-red-600";
+        removeBtn.textContent = "✕";
+        removeBtn.addEventListener("click", () => { aboutLinks.splice(i, 1); renderAboutLinks(); });
+
+        row.appendChild(textInput);
+        row.appendChild(urlInput);
+        row.appendChild(removeBtn);
+        aboutLinksList.appendChild(row);
+      });
+    }
+
+    renderAboutLinks();
+
+    addAboutLinkBtn.addEventListener("click", () => {
+      aboutLinks.push({ text: "", url: "" });
+      renderAboutLinks();
+      const last = aboutLinksList.lastElementChild?.querySelector("input");
+      if (last) (last as HTMLInputElement).focus();
+    });
+
+    aboutSaveBtn.addEventListener("click", async () => {
+      aboutStatus.textContent = "Saving…";
+      aboutStatus.style.color = "";
+
+      const cleanLinks = aboutLinks.filter((l) => l.text.trim() || l.url.trim());
+
+      const res = await fetch("/api/about", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          bio: aboutBio.value.trim(),
+          email: aboutEmail.value.trim(),
+          links: cleanLinks,
+        }),
+      });
+
+      if (res.ok) {
+        aboutLinks = cleanLinks;
+        renderAboutLinks();
+        aboutStatus.textContent = "✓ Saved";
+        aboutStatus.style.color = "#16a34a";
+      } else {
+        aboutStatus.textContent = "Save failed";
+        aboutStatus.style.color = "#dc2626";
+      }
+
+      setTimeout(() => { aboutStatus.textContent = ""; aboutStatus.style.color = ""; }, 2500);
+    });
+
+    // ── Initial render ──
+    renderList();
+  </script>
+</Layout>
