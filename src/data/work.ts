@@ -12,14 +12,28 @@ export type WorkItem = {
   slides: WorkGallerySlide[];
 };
 
+const UPLOAD_IMAGE_EXT = /\.(jpe?g|png|gif|webp)$/i;
+
+/** Smaller asset for grid thumbnails & carousel (full-res still used in lightbox). */
+function thumbUrlForUpload(src: string): string {
+  if (src.startsWith("/uploads/") && UPLOAD_IMAGE_EXT.test(src)) {
+    return src.replace(UPLOAD_IMAGE_EXT, "-thumb.webp");
+  }
+  return src;
+}
+
 /** Grid preview URL for a slide (used when cycling thumbnails on the Work page). */
 export function gridThumbSrc(slide: WorkGallerySlide): string {
   if (slide.kind === "video") {
-    return slide.poster;
+    return thumbUrlForUpload(slide.poster);
   }
-  const thumbW = 900;
-  const thumbH = Math.round((slide.height / slide.width) * thumbW);
-  return slide.src.replace(/\/\d+\/\d+$/, `/${thumbW}/${thumbH}`);
+  const src = slide.src;
+  if (/\/\d+\/\d+$/.test(src)) {
+    const thumbW = 900;
+    const thumbH = Math.round((slide.height / slide.width) * thumbW);
+    return src.replace(/\/\d+\/\d+$/, `/${thumbW}/${thumbH}`);
+  }
+  return thumbUrlForUpload(src);
 }
 
 export const workItems: WorkItem[] = (workData as WorkItem[])

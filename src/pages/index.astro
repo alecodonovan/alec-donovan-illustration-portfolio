@@ -57,19 +57,19 @@ const carouselProjects = workItems.map((item) => ({
                     <video
                       class="absolute inset-0 w-full h-full object-cover object-left-top"
                       data-project-thumb
-                      autoplay
                       muted
                       loop
                       playsinline
-                      src={videoSrc}
-                      poster={videoPoster}
+                      preload="none"
+                      data-grid-video-src={videoSrc}
+                      poster={thumbs[0]}
                     />
                   ) : isVideo ? (
                     <img
                       class="absolute inset-0 w-full h-full object-cover object-left-top"
                       data-project-thumb
                       draggable="false"
-                      src={videoPoster}
+                      src={thumbs[0]}
                       alt={item.thumbAlt}
                       loading="lazy"
                       decoding="async"

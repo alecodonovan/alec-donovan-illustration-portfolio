@@ -3,6 +3,9 @@ export const prerender = false;
 import type { APIRoute } from "astro";
 import { writeFileSync, mkdirSync } from "node:fs";
 import { join, extname } from "node:path";
+import sharp from "sharp";
+
+const RASTER_IMAGE_EXT = /\.(jpe?g|png|gif|webp)$/i;
 
 const UPLOAD_DIR = join(process.cwd(), "public/uploads");
 
@@ -32,7 +35,17 @@ export const POST: APIRoute = async ({ request }) => {
   mkdirSync(UPLOAD_DIR, { recursive: true });
 
   const buffer = Buffer.from(await file.arrayBuffer());
-  writeFileSync(join(UPLOAD_DIR, uniqueName), buffer);
+  const dest = join(UPLOAD_DIR, uniqueName);
+  writeFileSync(dest, buffer);
+
+  if (RASTER_IMAGE_EXT.test(uniqueName)) {
+    const thumbName = uniqueName.replace(RASTER_IMAGE_EXT, "-thumb.webp");
+    await sharp(buffer)
+      .rotate()
+      .resize({ width: 900, withoutEnlargement: true })
+      .webp({ quality: 82 })
+      .toFile(join(UPLOAD_DIR, thumbName));
+  }
 
   return new Response(
     JSON.stringify({ url: `/uploads/${uniqueName}` }),

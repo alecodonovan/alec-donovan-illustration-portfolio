@@ -57,19 +57,42 @@ function layoutMasonry() {
   grid.classList.add("masonry-ready");
 }
 
-function kickstartAutoplayVideos() {
+/** Avoid downloading every grid MP4 at once; load + play only when the card nears the viewport. */
+function kickstartLazyGridVideos() {
   const grid = document.getElementById("work-grid");
   if (!grid) return;
-  grid.querySelectorAll<HTMLVideoElement>("video[autoplay]").forEach((v) => {
-    v.muted = true;
-    v.play().catch(() => {});
-  });
+
+  const videos = grid.querySelectorAll<HTMLVideoElement>("video[data-grid-video-src]");
+  if (!videos.length) return;
+
+  const start = (video: HTMLVideoElement) => {
+    const url = video.dataset.gridVideoSrc;
+    if (!url) return;
+    video.removeAttribute("data-grid-video-src");
+    video.src = url;
+    video.muted = true;
+    video.play().catch(() => {});
+  };
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        const v = e.target as HTMLVideoElement;
+        io.unobserve(v);
+        start(v);
+      }
+    },
+    { root: null, rootMargin: "180px", threshold: 0.01 },
+  );
+
+  videos.forEach((v) => io.observe(v));
 }
 
 async function initMasonry() {
   await document.fonts.ready;
   layoutMasonry();
-  kickstartAutoplayVideos();
+  kickstartLazyGridVideos();
 
   const grid = document.getElementById("work-grid");
   if (!grid) return;

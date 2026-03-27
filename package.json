@@ -4,6 +4,8 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
+    "generate-thumbs": "node scripts/generate-thumbs.mjs",
+    "prebuild": "node scripts/generate-thumbs.mjs",
     "build": "astro build",
     "preview": "astro preview"
   },
@@ -13,6 +15,7 @@
     "@astrojs/tailwind": "^5.1.4",
     "astro": "^4.16.18",
     "photoswipe": "^5.4.4",
+    "sharp": "^0.33.5",
     "tailwindcss": "^3.4.17"
   }
 }
