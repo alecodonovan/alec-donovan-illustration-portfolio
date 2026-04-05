@@ -87,6 +87,21 @@ function init() {
   const grid = document.getElementById("work-grid");
   if (!overlay || !slidesEl || !titleEl || !descEl || !closeBtn || !scrollWrap || !bodyWrap || !prevBtn || !nextBtn || !grid) return;
 
+  const slidesEndSpacer = document.createElement("div");
+  slidesEndSpacer.className = "lightbox-slides-end";
+  slidesEndSpacer.setAttribute("aria-hidden", "true");
+
+  function syncLightboxSlidesEndSpacer() {
+    if (!isDesktop() || !overlay.classList.contains("is-open")) {
+      slidesEndSpacer.style.width = "0px";
+      return;
+    }
+    const portRight = scrollWrap.getBoundingClientRect().right;
+    const nextRight = nextBtn.getBoundingClientRect().right;
+    const w = Math.max(0, portRight - nextRight);
+    slidesEndSpacer.style.width = `${w}px`;
+  }
+
   let currentProjectIndex = 0;
 
   for (const cp of carousels) {
@@ -114,13 +129,6 @@ function init() {
     },
     true,
   );
-
-  function createGutter(): HTMLElement {
-    const el = document.createElement("div");
-    el.className = "lightbox-gutter";
-    el.setAttribute("aria-hidden", "true");
-    return el;
-  }
 
   /** Filled Material Symbol (lime); ligature name as text content. */
   function msIcon(name: string, extraClass = ""): HTMLSpanElement {
@@ -425,8 +433,6 @@ function init() {
 
     const desktop = isDesktop();
 
-    slidesEl!.appendChild(createGutter());
-
     for (const slide of project.slides) {
       if (slide.kind === "image") {
         const wrap = document.createElement("div");
@@ -468,7 +474,7 @@ function init() {
       }
     }
 
-    slidesEl!.appendChild(createGutter());
+    slidesEl!.appendChild(slidesEndSpacer);
 
     titleEl!.textContent = project.projectTitle;
     descEl!.textContent = project.projectDescription;
@@ -477,6 +483,10 @@ function init() {
 
     document.body.classList.add("lightbox-open");
     overlay!.classList.add("is-open");
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(syncLightboxSlidesEndSpacer);
+    });
   }
 
   function close() {
@@ -1067,6 +1077,15 @@ function init() {
       if (pointerDown) resetLightboxDrag();
     }
   });
+
+  const lbEndResize = new ResizeObserver(() => syncLightboxSlidesEndSpacer());
+  const lightboxInner = overlay.querySelector<HTMLElement>(".lightbox-inner");
+  if (lightboxInner) lbEndResize.observe(lightboxInner);
+  lbEndResize.observe(scrollWrap);
+  window.addEventListener("resize", syncLightboxSlidesEndSpacer);
+  if (document.fonts?.ready) {
+    void document.fonts.ready.then(syncLightboxSlidesEndSpacer);
+  }
 }
 
 if (document.readyState === "loading") {

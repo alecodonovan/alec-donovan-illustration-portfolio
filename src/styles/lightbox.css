@@ -20,30 +20,29 @@
 
 .lightbox-slides {
   flex-direction: column;
-  padding: 0 1.25rem 2rem;
-}
-
-.lightbox-gutter {
-  display: none;
+  /* Horizontal inset comes from .lightbox-inner (matches Work page px-5 / md:px-10 / lg:px-14) */
+  padding: 0 0 2rem;
 }
 
 /* ── Desktop: horizontal scroll layout ── */
 
 @media (min-width: 768px) {
+  /* Visible overflow so full-bleed .lightbox-scroll isn’t clipped (visible+hidden would force overflow-x:auto) */
   .lightbox-body {
-    overflow: hidden;
+    overflow: visible;
   }
 
   .lightbox-slides {
     flex-direction: row;
     height: 100%;
     padding: 0;
-  }
-
-  .lightbox-gutter {
-    display: block;
-    flex-shrink: 0;
-    width: 1.5rem;
+    /* First slide lines up with title/description: centered 1600px shell + same px as .lightbox-inner */
+    padding-left: calc(
+      (100vw - min(100vw, 1600px)) / 2 + max(2.5rem, env(safe-area-inset-left, 0px))
+    );
+    /* Trailing scroll room: width set in JS (.lightbox-slides-end) so last slide can align with project nav */
+    padding-right: 0;
+    box-sizing: border-box;
   }
 
   .lightbox-scroll {
@@ -52,6 +51,11 @@
     cursor: grab;
     overflow-x: auto;
     overflow-y: hidden;
+    width: 100vw;
+    max-width: none;
+    margin-left: calc(50% - 50vw);
+    box-sizing: border-box;
+    min-width: 0;
   }
 
   .lightbox-scroll::-webkit-scrollbar {
@@ -65,9 +69,20 @@
 }
 
 @media (min-width: 1024px) {
-  .lightbox-gutter {
-    width: 2.5rem;
+  .lightbox-slides {
+    padding-left: calc(
+      (100vw - min(100vw, 1600px)) / 2 + max(3.5rem, env(safe-area-inset-left, 0px))
+    );
   }
+}
+
+/* Inflexible flex item; width assigned via JS to match scrollport vs. #lightbox-next */
+.lightbox-slides-end {
+  flex: 0 0 auto;
+  flex-shrink: 0;
+  align-self: stretch;
+  width: 0;
+  pointer-events: none;
 }
 
 @keyframes lb-shimmer-sweep {
@@ -387,7 +402,7 @@ body.lightbox-open {
   overflow: hidden;
 }
 
-/* Header inversion when lightbox is open */
+/* Header inversion when lightbox is open — full-bleed bar; content matches Work shell (1600px + px) */
 body.lightbox-open .site-header--work {
   position: fixed;
   top: 0;
@@ -397,23 +412,35 @@ body.lightbox-open .site-header--work {
   box-sizing: border-box;
   width: 100%;
   padding-top: max(2rem, env(safe-area-inset-top));
-  padding-right: max(1.25rem, env(safe-area-inset-right));
+  padding-right: 0;
   padding-bottom: 1rem;
-  padding-left: max(1.25rem, env(safe-area-inset-left));
+  padding-left: 0;
   background: #2d2d2d;
   color: #ffffff;
+}
+
+body.lightbox-open .site-header--work .site-header__band {
+  box-sizing: border-box;
+  max-width: 1600px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-right: max(1.25rem, env(safe-area-inset-right));
+  padding-left: max(1.25rem, env(safe-area-inset-left));
 }
 
 @media (min-width: 768px) {
   body.lightbox-open .site-header--work {
     padding-top: max(3rem, env(safe-area-inset-top));
+  }
+
+  body.lightbox-open .site-header--work .site-header__band {
     padding-right: max(2.5rem, env(safe-area-inset-right));
     padding-left: max(2.5rem, env(safe-area-inset-left));
   }
 }
 
 @media (min-width: 1024px) {
-  body.lightbox-open .site-header--work {
+  body.lightbox-open .site-header--work .site-header__band {
     padding-right: max(3.5rem, env(safe-area-inset-right));
     padding-left: max(3.5rem, env(safe-area-inset-left));
   }
