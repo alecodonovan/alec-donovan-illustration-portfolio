@@ -629,5 +629,44 @@
         "height": 2000
       }
     ]
+  },
+  {
+    "title": "Pants",
+    "description": "",
+    "thumbAlt": "Smarties Pant",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1779747268452-IMG_1355.JPG",
+        "width": 2000,
+        "height": 2000
+      }
+    ]
+  },
+  {
+    "title": "Le Petite Spiral",
+    "description": "",
+    "thumbAlt": "Le Petite Spiral",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1779753245842-IMG_1353.JPG",
+        "width": 1080,
+        "height": 1920
+      }
+    ]
+  },
+  {
+    "title": "Springtime for Bubble Butt",
+    "description": "",
+    "thumbAlt": "Springtime for Bubble Butt",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1779753362225-IMG_1354.JPG",
+        "width": 2400,
+        "height": 4000
+      }
+    ]
   }
 ]

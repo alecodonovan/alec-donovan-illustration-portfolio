@@ -1,7 +1,11 @@
 ---
+export const prerender = false;
+
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
-import { gridThumbSrc, workItems } from "../data/work";
+import { gridThumbSrc, loadWorkItems } from "../data/work";
+
+const workItems = loadWorkItems();
 
 /** First N cards: eager thumbs + immediate grid video start (top of masonry / mobile stack). */
 const EAGER_THUMB_COUNT = 9;

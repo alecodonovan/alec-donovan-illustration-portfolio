@@ -1,4 +1,5 @@
-import workData from "./work.json";
+import workJson from "./work.json";
+import { readProjects } from "../lib/projects";
 
 export type WorkGallerySlide =
   | { kind: "image"; src: string; width: number; height: number; hidden?: boolean }
@@ -38,9 +39,19 @@ export function gridThumbSrc(slide: WorkGallerySlide): string {
   return thumbUrlForUpload(src);
 }
 
-export const workItems: WorkItem[] = (workData as WorkItem[])
-  .filter((item) => !item.hidden)
-  .map((item) => ({
-    ...item,
-    slides: item.slides.filter((s) => !s.hidden),
-  }));
+function normalizeWorkItems(data: WorkItem[]): WorkItem[] {
+  return data
+    .filter((item) => !item.hidden)
+    .map((item) => ({
+      ...item,
+      slides: item.slides.filter((s) => !s.hidden),
+    }));
+}
+
+/** Bundled snapshot (build-time). Prefer {@link loadWorkItems} for the live Work page. */
+export const workItems: WorkItem[] = normalizeWorkItems(workJson as WorkItem[]);
+
+/** Read work.json from disk so Admin saves show up without restarting the dev server. */
+export function loadWorkItems(): WorkItem[] {
+  return normalizeWorkItems(readProjects() as WorkItem[]);
+}

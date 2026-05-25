@@ -14,7 +14,14 @@ const aboutContent = readAbout();
     <div class="mx-auto max-w-4xl px-5 py-8 md:px-10">
 
       <header class="flex items-center justify-between border-b border-ink/10 pb-6">
-        <h1 class="text-[1.5rem] font-bold tracking-tight">Admin</h1>
+        <div>
+          <h1 class="text-[1.5rem] font-bold tracking-tight">Admin</h1>
+          <p class="mt-1 max-w-xl text-[0.8125rem] leading-relaxed text-ink/50">
+            Upload images here, then click <strong class="font-medium text-ink/70">Save</strong> on each project.
+            Refresh the <a href="/" class="underline decoration-ink/30 underline-offset-2 hover:text-ink">Work page</a> to see updates.
+            To publish live, commit and push <code class="text-[0.75rem]">work.json</code> and <code class="text-[0.75rem]">public/uploads/</code>.
+          </p>
+        </div>
         <a href="/" class="text-[0.875rem] text-ink/60 underline decoration-ink/30 underline-offset-2 hover:text-ink">
           &larr; Back to site
         </a>
@@ -109,7 +116,8 @@ const aboutContent = readAbout();
 
       <div class="flex items-center justify-between border-t border-ink/10 px-6 py-4">
         <button id="editor-delete" type="button" class="hidden text-[0.8125rem] font-medium text-red-600 hover:text-red-800">Delete Project</button>
-        <div class="ml-auto flex gap-3">
+        <div class="ml-auto flex items-center gap-3">
+          <span id="editor-status" class="text-[0.8125rem] text-ink/40"></span>
           <button id="editor-cancel" type="button" class="rounded-lg border border-ink/15 px-4 py-2 text-[0.8125rem] font-medium text-ink hover:bg-ink/5">Cancel</button>
           <button id="editor-save" type="button" class="rounded-lg bg-ink px-5 py-2 text-[0.8125rem] font-medium text-white hover:bg-ink/80">Save</button>
         </div>
@@ -160,6 +168,7 @@ const aboutContent = readAbout();
     const closeBtn = document.getElementById("editor-close")!;
     const cancelBtn = document.getElementById("editor-cancel")!;
     const saveBtn = document.getElementById("editor-save")!;
+    const editorStatus = document.getElementById("editor-status")!;
     const deleteBtn = document.getElementById("editor-delete")!;
     const addSlideBtn = document.getElementById("add-slide-btn")!;
 
@@ -175,11 +184,30 @@ const aboutContent = readAbout();
 
     // ── Upload helpers ──
 
+    function gridPreviewSrc(slide: SlideData): string {
+      const src = slide.kind === "video" ? slide.poster : slide.src;
+      if (!src) return "";
+      if (/\.gif$/i.test(src)) return src;
+      if (src.startsWith("/uploads/") && /\.(jpe?g|png|webp)$/i.test(src)) {
+        return src.replace(/\.(jpe?g|png|webp)$/i, "-thumb.webp");
+      }
+      return src;
+    }
+
     async function uploadFile(file: File): Promise<string> {
       const form = new FormData();
       form.append("file", file);
       const res = await fetch("/api/upload", { method: "POST", body: form });
-      if (!res.ok) throw new Error("Upload failed");
+      if (!res.ok) {
+        let msg = "Upload failed";
+        try {
+          const body = await res.json();
+          if (body?.error) msg = body.error;
+        } catch {
+          /* ignore */
+        }
+        throw new Error(msg);
+      }
       const { url } = await res.json();
       return url;
     }
@@ -268,11 +296,11 @@ const aboutContent = readAbout();
           opts.onUpload({ url, ...dims });
 
           setTimeout(() => renderSlides(), 600);
-        } catch {
-          status.textContent = "Upload failed";
+        } catch (err) {
+          status.textContent = err instanceof Error ? err.message : "Upload failed";
           status.style.color = "#dc2626";
           zone.style.pointerEvents = "";
-          setTimeout(() => { status.classList.add("hidden"); status.style.color = ""; zone.style.borderColor = ""; }, 2000);
+          setTimeout(() => { status.classList.add("hidden"); status.style.color = ""; zone.style.borderColor = ""; }, 4000);
         }
       }
 
@@ -336,7 +364,7 @@ const aboutContent = readAbout();
         if (p.slides.length > 0) {
           const img = document.createElement("img");
           const s = p.slides[0];
-          img.src = s.kind === "video" ? s.poster : s.src;
+          img.src = gridPreviewSrc(s);
           img.className = "h-full w-full object-cover";
           img.alt = "";
           thumb.appendChild(img);
@@ -729,6 +757,7 @@ const aboutContent = readAbout();
     // ── Save ──
 
     async function save() {
+      editorStatus.textContent = "";
       const data: ProjectData = {
         title: edTitle.value.trim(),
         description: edDesc.value.trim(),
@@ -765,6 +794,17 @@ const aboutContent = readAbout();
         }
         renderList();
         closeEditor();
+        editorStatus.textContent = "";
+      } else {
+        let msg = "Save failed";
+        try {
+          const body = await res.json();
+          if (body?.error) msg = body.error;
+        } catch {
+          /* ignore */
+        }
+        editorStatus.textContent = msg;
+        editorStatus.style.color = "#dc2626";
       }
     }
 

@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
+    "dev": "node scripts/generate-thumbs.mjs && astro dev",
     "generate-thumbs": "node scripts/generate-thumbs.mjs",
     "build": "node scripts/generate-thumbs.mjs && astro build",
     "preview": "astro preview"
