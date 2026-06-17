@@ -388,6 +388,43 @@
     "hidden": false
   },
   {
+    "title": "Prints",
+    "description": "A few prints I made. I still have some left. Let me know if you want one (frames not included)!",
+    "thumbAlt": "Prints I",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1781716893644-PrintFrame_BoneDry_01.jpg",
+        "width": 1700,
+        "height": 2106
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1781716903437-PrintFrame_CactusLoins_01.jpg",
+        "width": 1700,
+        "height": 2106
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1781716911453-PrintMock_HeartRings_01.jpg",
+        "width": 1700,
+        "height": 2106
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1781716919090-PrintFrame_RockLobster_01.jpg",
+        "width": 1700,
+        "height": 2106
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1781716926438-PrintFrame_Tangled_01.jpg",
+        "width": 1700,
+        "height": 2106
+      }
+    ]
+  },
+  {
     "title": "Faces",
     "description": "",
     "thumbAlt": "Faces",
@@ -701,15 +738,15 @@
     ]
   },
   {
-    "title": "L'eggs",
+    "title": "Total Trash",
     "description": "",
-    "thumbAlt": "L'eggs",
+    "thumbAlt": "Total Trash",
     "slides": [
       {
         "kind": "image",
-        "src": "/uploads/1779757308087-IMG_1360.JPG",
-        "width": 1080,
-        "height": 1920
+        "src": "/uploads/1781717797301-IMG_1372.PNG",
+        "width": 3000,
+        "height": 3000
       }
     ]
   },
@@ -721,6 +758,12 @@
       {
         "kind": "image",
         "src": "/uploads/1779757257913-IMG_1363.JPG",
+        "width": 2048,
+        "height": 2048
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1781717713593-IMG_1371.JPG",
         "width": 2048,
         "height": 2048
       }
@@ -755,6 +798,51 @@
         "src": "/uploads/1779757641587-IMG_1364.JPG",
         "width": 2048,
         "height": 2048
+      }
+    ]
+  },
+  {
+    "title": "Tangles I",
+    "description": "",
+    "thumbAlt": "Tangles I",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1781717752157-IMG_1373.PNG",
+        "width": 3000,
+        "height": 3000
+      },
+      {
+        "kind": "image",
+        "src": "/uploads/1781717757552-IMG_1374.PNG",
+        "width": 3000,
+        "height": 3000
+      }
+    ]
+  },
+  {
+    "title": "Atlassian Blog",
+    "description": "An illustration I made for an Atlassian Blog article about intuitive management styles.",
+    "thumbAlt": "Atlassian Blog",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1781717873044-IMG_1365.JPG",
+        "width": 2240,
+        "height": 1090
+      }
+    ]
+  },
+  {
+    "title": "L'eggs",
+    "description": "",
+    "thumbAlt": "L'eggs",
+    "slides": [
+      {
+        "kind": "image",
+        "src": "/uploads/1779757308087-IMG_1360.JPG",
+        "width": 1080,
+        "height": 1920
       }
     ]
   }
